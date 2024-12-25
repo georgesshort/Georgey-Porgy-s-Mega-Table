@@ -15,8 +15,8 @@
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
-            position: relative;
-            white-space: nowrap; /* Prevent text from wrapping */
+            vertical-align: middle;
+            white-space: nowrap; /* Prevent text wrapping */
             min-width: 100px;
             height: 70px; /* Adjust for readability */
         }
@@ -25,9 +25,14 @@
             background-color: #f2f2f2;
             position: sticky;
             z-index: 2;
+        }
+
+        /* Sticky top row */
+        th {
             top: 0;
         }
 
+        /* Sticky left column */
         th:first-child,
         td:first-child {
             position: sticky;
