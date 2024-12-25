@@ -9,21 +9,21 @@
             border-collapse: collapse;
             width: 100%;
             margin-top: 20px;
-            position: relative;
         }
 
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
-            vertical-align: top;
             position: relative;
+            white-space: nowrap; /* Prevent text from wrapping */
         }
 
         th {
             background-color: #f2f2f2;
             position: sticky;
             z-index: 2;
+            top: 0;
         }
 
         th:first-child,
@@ -38,30 +38,28 @@
             background-color: #f9f9f9;
         }
 
-        td .multiplication {
-            display: block;
-            font-size: 18px;
-            font-weight: bold;
+        td {
+            font-size: 14px; /* Uniform font size */
+            min-width: 100px; /* Ensure enough space for larger text */
+            height: 50px; /* Ensure consistent height */
+            display: flex;
+            flex-direction: row; /* Layout the text horizontally */
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
         }
 
-        td .fraction {
-            display: block;
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            font-size: 12px;
-        }
-
-        td .decimal {
-            display: block;
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            font-size: 12px;
+        td span {
+            flex: 1; /* Distribute space evenly */
+            text-align: center;
         }
 
         input, button {
             margin: 5px;
+        }
+
+        #table-container {
+            overflow: auto; /* Enable scrolling for large tables */
         }
     </style>
 </head>
@@ -104,15 +102,12 @@
 
                     // Create content
                     const multiplication = document.createElement('span');
-                    multiplication.className = 'multiplication';
                     multiplication.textContent = i * j; // Multiplication result
 
                     const fraction = document.createElement('span');
-                    fraction.className = 'fraction';
                     fraction.textContent = `${i}/${j}`; // Division result as fraction
 
                     const decimal = document.createElement('span');
-                    decimal.className = 'decimal';
                     decimal.textContent = (i / j).toFixed(2); // Division result as decimal
 
                     // Append to the cell
