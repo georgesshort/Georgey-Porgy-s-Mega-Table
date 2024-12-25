@@ -12,8 +12,21 @@
             height: 100vh; /* Use the full viewport height */
         }
 
-        h1, label, input, button {
+        h1 {
             margin: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .controls label,
+        .controls input,
+        .controls button {
+            margin: 0 5px;
         }
 
         #table-container {
@@ -67,13 +80,18 @@
 </head>
 <body>
     <h1>Georgey Porgy’s Mega Table</h1>
-    <label for="range">Table Range (e.g., 10 for 1-10): </label>
-    <input type="number" id="range" min="1" value="10">
-    <button onclick="generateTable()">Generate Table</button>
-    <br>
-    <label for="search">Search for a value (e.g., 12, 3/4, 0.75): </label>
-    <input type="text" id="search" placeholder="Enter value">
-    <button onclick="searchTable()">Search</button>
+    <div class="controls">
+        <div>
+            <label for="range">Table Range (e.g., 10 for 1-10): </label>
+            <input type="number" id="range" min="1" value="10">
+            <button onclick="generateTable()">Generate Table</button>
+        </div>
+        <div>
+            <label for="search">Search for a value (e.g., 12, 3/4, 0.75): </label>
+            <input type="text" id="search" placeholder="Enter value">
+            <button onclick="searchTable()">Search</button>
+        </div>
+    </div>
     <div id="table-container"></div>
 
     <script>
