@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Georgey Porgy’s Multi-Purpose Table&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>table {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-collapse: collapse;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>th, td {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ddd;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>th {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f2f2f2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f9f9f9;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.highlight {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: yellow;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>input, button {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>td {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Georgey Porgy’s Multi-Purpose Table&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;label for="range"&gt;Table Range (e.g., 10 for 1-10): &lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="range" min="1" value="10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="generateTable()"&gt;Generate Table&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="clearHighlights()"&gt;Clear Highlights&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="table-container"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Function to generate the table</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateTable() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const range = document.getElementById('range').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById('table-container');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML = ''; // Clear any existing table</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const table = document.createElement('table');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const headerRow = document.createElement('tr');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Create table headers</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const emptyCell = document.createElement('th');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>headerRow.appendChild(emptyCell);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 1; i &lt;= range; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const th = document.createElement('th');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>th.textContent = i; // Header for numbers</p>
+<p class="p1"><span class="Apple-converted-space">                </span>headerRow.appendChild(th);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>table.appendChild(headerRow);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Create table rows</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 1; i &lt;= range; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const row = document.createElement('tr');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const headerCell = document.createElement('th');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>headerCell.textContent = i; // Header for numbers</p>
+<p class="p1"><span class="Apple-converted-space">                </span>row.appendChild(headerCell);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>for (let j = 1; j &lt;= range; j++) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const cell = document.createElement('td');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const multiplication = i * j; // Multiplication result</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const divisionDecimal = (i / j).toFixed(2); // Division result as decimal</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const divisionFraction = `${i}/${j}`; // Division result as fraction</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cell.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;×:&lt;/strong&gt; ${multiplication}&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;÷:&lt;/strong&gt; ${divisionDecimal}&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;Frac:&lt;/strong&gt; ${divisionFraction}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Add hover functionality</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cell.addEventListener('mouseover', () =&gt; highlightRowCol(i, j, range));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cell.addEventListener('mouseout', clearHighlights);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>row.appendChild(cell);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>table.appendChild(row);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.appendChild(table); // Add table to the container</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Function to highlight row and column</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function highlightRowCol(row, col, range) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const table = document.querySelector('table');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 1; i &lt;= range; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>table.rows[row].cells[i].classList.add('highlight'); // Highlight row</p>
+<p class="p1"><span class="Apple-converted-space">                </span>table.rows[i].cells[col].classList.add('highlight'); // Highlight column</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Function to clear all highlights</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function clearHighlights() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.highlight').forEach(cell =&gt; cell.classList.remove('highlight'));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
