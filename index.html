@@ -13,18 +13,18 @@
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
             text-align: center;
-            white-space: nowrap; /* Prevent text wrapping */
-            min-width: 120px;
-            height: 70px; /* Adjust for readability */
+            white-space: nowrap;
+            min-width: 90px; /* Reduced size for smaller boxes */
+            height: 60px; /* Reduced height for smaller boxes */
+            padding: 4px; /* Adjust padding for better fit */
         }
 
         th {
             background-color: #f2f2f2;
             position: sticky;
             top: 0;
-            z-index: 2; /* Ensure the sticky row appears above others */
+            z-index: 2; /* Ensure sticky top row works */
         }
 
         /* Sticky left column */
@@ -42,7 +42,8 @@
 
         td span {
             display: block;
-            font-size: 16px;
+            font-size: 14px; /* Reduced font size for better fit */
+            line-height: 1.2; /* Improved spacing within boxes */
         }
 
         input, button {
@@ -50,8 +51,8 @@
         }
 
         #table-container {
-            overflow: auto; /* Allow scrolling for large tables */
-            max-height: 500px; /* Optional: Set a maximum height for the container */
+            overflow: auto;
+            max-height: 500px; /* Optional: Set a max height for scrolling */
         }
 
         .highlight {
