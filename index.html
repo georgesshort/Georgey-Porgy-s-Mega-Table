@@ -5,29 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Georgey Porgy’s Mega Table</title>
     <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Use the full viewport height */
+        }
+
+        h1, label, input, button {
+            margin: 10px;
+        }
+
+        #table-container {
+            flex: 1; /* Take up the remaining space */
+            overflow: auto;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
-            margin-top: 20px;
         }
 
         th, td {
             border: 1px solid #ddd;
             text-align: center;
             white-space: nowrap;
-            min-width: 90px; /* Reduced size for smaller boxes */
-            height: 60px; /* Reduced height for smaller boxes */
-            padding: 4px; /* Adjust padding for better fit */
+            min-width: 90px;
+            height: 60px;
+            padding: 4px;
         }
 
         th {
             background-color: #f2f2f2;
             position: sticky;
             top: 0;
-            z-index: 2; /* Ensure sticky top row works */
+            z-index: 2;
         }
 
-        /* Sticky left column */
         th:first-child,
         td:first-child {
             position: sticky;
@@ -42,17 +56,8 @@
 
         td span {
             display: block;
-            font-size: 14px; /* Reduced font size for better fit */
-            line-height: 1.2; /* Improved spacing within boxes */
-        }
-
-        input, button {
-            margin: 5px;
-        }
-
-        #table-container {
-            overflow: auto;
-            max-height: 500px; /* Optional: Set a max height for scrolling */
+            font-size: 14px;
+            line-height: 1.2;
         }
 
         .highlight {
