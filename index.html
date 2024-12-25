@@ -13,10 +13,12 @@
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
             position: relative;
             white-space: nowrap; /* Prevent text from wrapping */
+            min-width: 100px;
+            height: 70px; /* Adjust for readability */
         }
 
         th {
@@ -38,20 +40,21 @@
             background-color: #f9f9f9;
         }
 
-        td {
-            font-size: 14px; /* Uniform font size */
-            min-width: 100px; /* Ensure enough space for larger text */
-            height: 50px; /* Ensure consistent height */
-            display: flex;
-            flex-direction: row; /* Layout the text horizontally */
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px;
+        td span {
+            display: block;
         }
 
-        td span {
-            flex: 1; /* Distribute space evenly */
-            text-align: center;
+        td .multiplication {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        td .fraction {
+            font-size: 14px;
+        }
+
+        td .decimal {
+            font-size: 14px;
         }
 
         input, button {
@@ -59,7 +62,7 @@
         }
 
         #table-container {
-            overflow: auto; /* Enable scrolling for large tables */
+            overflow: auto; /* Allow scrolling for large tables */
         }
     </style>
 </head>
@@ -102,12 +105,15 @@
 
                     // Create content
                     const multiplication = document.createElement('span');
+                    multiplication.className = 'multiplication';
                     multiplication.textContent = i * j; // Multiplication result
 
                     const fraction = document.createElement('span');
+                    fraction.className = 'fraction';
                     fraction.textContent = `${i}/${j}`; // Division result as fraction
 
                     const decimal = document.createElement('span');
+                    decimal.className = 'decimal';
                     decimal.textContent = (i / j).toFixed(2); // Division result as decimal
 
                     // Append to the cell
