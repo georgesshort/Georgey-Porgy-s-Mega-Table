@@ -3,47 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Georgey Porgy’s Multi-Purpose Table</title>
+    <title>Georgey Porgy’s Mega Table</title>
     <style>
         table {
             border-collapse: collapse;
             width: 100%;
             margin-top: 20px;
+            position: relative;
         }
 
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
+            vertical-align: top;
+            position: relative;
         }
 
         th {
             background-color: #f2f2f2;
+            position: sticky;
+            z-index: 2;
+        }
+
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #f2f2f2;
+            z-index: 1;
         }
 
         tr:hover {
             background-color: #f9f9f9;
         }
 
-        .highlight {
-            background-color: yellow;
+        td .multiplication {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        td .fraction {
+            display: block;
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 12px;
+        }
+
+        td .decimal {
+            display: block;
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 12px;
         }
 
         input, button {
             margin: 5px;
         }
-
-        td {
-            white-space: nowrap;
-        }
     </style>
 </head>
 <body>
-    <h1>Georgey Porgy’s Multi-Purpose Table</h1>
+    <h1>Georgey Porgy’s Mega Table</h1>
     <label for="range">Table Range (e.g., 10 for 1-10): </label>
     <input type="number" id="range" min="1" value="10">
     <button onclick="generateTable()">Generate Table</button>
-    <button onclick="clearHighlights()">Clear Highlights</button>
     <div id="table-container"></div>
 
     <script>
@@ -75,18 +101,24 @@
 
                 for (let j = 1; j <= range; j++) {
                     const cell = document.createElement('td');
-                    const multiplication = i * j; // Multiplication result
-                    const divisionDecimal = (i / j).toFixed(2); // Division result as decimal
-                    const divisionFraction = `${i}/${j}`; // Division result as fraction
-                    cell.innerHTML = `
-                        <strong>×:</strong> ${multiplication}<br>
-                        <strong>÷:</strong> ${divisionDecimal}<br>
-                        <strong>Frac:</strong> ${divisionFraction}
-                    `;
 
-                    // Add hover functionality
-                    cell.addEventListener('mouseover', () => highlightRowCol(i, j, range));
-                    cell.addEventListener('mouseout', clearHighlights);
+                    // Create content
+                    const multiplication = document.createElement('span');
+                    multiplication.className = 'multiplication';
+                    multiplication.textContent = i * j; // Multiplication result
+
+                    const fraction = document.createElement('span');
+                    fraction.className = 'fraction';
+                    fraction.textContent = `${i}/${j}`; // Division result as fraction
+
+                    const decimal = document.createElement('span');
+                    decimal.className = 'decimal';
+                    decimal.textContent = (i / j).toFixed(2); // Division result as decimal
+
+                    // Append to the cell
+                    cell.appendChild(multiplication);
+                    cell.appendChild(fraction);
+                    cell.appendChild(decimal);
 
                     row.appendChild(cell);
                 }
@@ -94,20 +126,6 @@
             }
 
             container.appendChild(table); // Add table to the container
-        }
-
-        // Function to highlight row and column
-        function highlightRowCol(row, col, range) {
-            const table = document.querySelector('table');
-            for (let i = 1; i <= range; i++) {
-                table.rows[row].cells[i].classList.add('highlight'); // Highlight row
-                table.rows[i].cells[col].classList.add('highlight'); // Highlight column
-            }
-        }
-
-        // Function to clear all highlights
-        function clearHighlights() {
-            document.querySelectorAll('.highlight').forEach(cell => cell.classList.remove('highlight'));
         }
     </script>
 </body>
