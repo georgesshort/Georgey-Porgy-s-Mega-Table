@@ -35,6 +35,8 @@
 
         #table-container {
             overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
+            height: calc(100vh - 150px); /* Adjust table height dynamically */
+            overflow-y: auto; /* Enable vertical scrolling */
             margin: 10px;
         }
 
@@ -57,7 +59,7 @@
             background-color: #f2f2f2;
             position: sticky;
             top: 0;
-            z-index: 2;
+            z-index: 3; /* Ensure it stays above other elements */
         }
 
         th:first-child,
@@ -65,7 +67,7 @@
             position: sticky;
             left: 0;
             background-color: #f2f2f2;
-            z-index: 1;
+            z-index: 2; /* Lower z-index than top header */
         }
 
         tr:hover {
