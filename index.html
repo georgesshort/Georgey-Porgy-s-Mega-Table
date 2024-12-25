@@ -7,45 +7,50 @@
     <style>
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Use the full viewport height */
+            font-family: Arial, sans-serif;
         }
 
         h1 {
-            margin: 10px;
+            text-align: center;
+            margin: 10px 0;
         }
 
         .controls {
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap;
+            justify-content: center;
             align-items: center;
             margin: 10px;
+            gap: 10px;
         }
 
-        .controls label,
-        .controls input,
-        .controls button {
-            margin: 0 5px;
+        .controls label {
+            font-size: 16px;
+        }
+
+        .controls input, .controls button {
+            padding: 5px;
+            font-size: 14px;
         }
 
         #table-container {
-            flex: 1; /* Take up the remaining space */
-            overflow: auto;
+            overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
+            margin: 10px;
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
+            min-width: 600px; /* Ensure minimum table width for small screens */
         }
 
         th, td {
             border: 1px solid #ddd;
             text-align: center;
             white-space: nowrap;
-            min-width: 90px;
-            height: 60px;
-            padding: 4px;
+            min-width: 80px;
+            padding: 8px;
+            font-size: 14px;
         }
 
         th {
@@ -69,12 +74,36 @@
 
         td span {
             display: block;
-            font-size: 14px;
-            line-height: 1.2;
+            font-size: 12px;
         }
 
         .highlight {
             background-color: yellow;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+                padding: 5px;
+                min-width: 70px;
+            }
+
+            td span {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            th, td {
+                font-size: 10px;
+                padding: 4px;
+                min-width: 60px;
+            }
+
+            td span {
+                font-size: 9px;
+            }
         }
     </style>
 </head>
@@ -92,7 +121,9 @@
             <button onclick="searchTable()">Search</button>
         </div>
     </div>
-    <div id="table-container"></div>
+    <div id="table-container">
+        <!-- The table will be dynamically generated here -->
+    </div>
 
     <script>
         // Function to generate the table
