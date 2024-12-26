@@ -24,6 +24,8 @@
             vertical-align: middle;
             font-size: 14px;
             font-weight: normal;
+            width: 120px;
+            height: 60px;
         }
 
         th {
@@ -41,7 +43,15 @@
         }
 
         tr:hover {
-            background-color: #f9f9f9;
+            background-color: #faf9e5;
+        }
+
+        td:hover {
+            background-color: yellow;
+        }
+
+        table tr:hover td, table td:hover {
+            background-color: yellow !important;
         }
 
         input, button {
@@ -125,12 +135,38 @@
                         <div>${decimal}</div>
                     `;
 
+                    // Highlight row and column on hover
+                    cell.addEventListener('mouseover', () => highlightRowCol(cell));
+                    cell.addEventListener('mouseout', clearHighlights);
+
                     row.appendChild(cell);
                 }
                 table.appendChild(row);
             }
 
             container.appendChild(table); // Add table to the container
+        }
+
+        // Function to highlight the row and column
+        function highlightRowCol(cell) {
+            const table = cell.closest('table');
+            const rowIndex = cell.parentElement.rowIndex;
+            const cellIndex = cell.cellIndex;
+
+            for (let i = 0; i < table.rows.length; i++) {
+                table.rows[i].cells[cellIndex]?.classList.add('highlight');
+            }
+
+            for (let j = 0; j < table.rows[rowIndex].cells.length; j++) {
+                table.rows[rowIndex].cells[j]?.classList.add('highlight');
+            }
+        }
+
+        // Function to clear all highlights
+        function clearHighlights() {
+            document.querySelectorAll('.highlight').forEach(cell => {
+                cell.classList.remove('highlight');
+            });
         }
 
         // Function to search for a value in the table
