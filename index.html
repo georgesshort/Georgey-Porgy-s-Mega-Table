@@ -37,8 +37,10 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 10px 20px; /* Increased horizontal padding */
+            padding: 8px 25px; /* Make boxes wider */
             position: relative;
+            font-size: 14px;
+            white-space: nowrap; /* Prevent fractions from wrapping */
         }
 
         th {
@@ -54,11 +56,6 @@
             left: 0;
             background-color: #f2f2f2;
             z-index: 1;
-        }
-
-        td {
-            font-size: 14px;
-            white-space: nowrap; /* Prevents fractions from wrapping */
         }
 
         tr:hover {
@@ -136,7 +133,12 @@
                     const simplifiedFraction = divisor > 1 ? `(${i / divisor}/${j / divisor})` : '';
                     const decimal = (i / j).toFixed(2);
 
-                    cell.innerHTML = `${i * j}<br>${fraction} ${simplifiedFraction}<br>${decimal}`;
+                    cell.innerHTML = `
+                        <div>${i * j}</div>
+                        <div>${fraction} ${simplifiedFraction}</div>
+                        <div>${decimal}</div>
+                    `;
+
                     cell.addEventListener('mouseover', () => highlight(cell, i, j, range));
                     cell.addEventListener('mouseout', clearHighlight);
 
@@ -145,7 +147,7 @@
                 table.appendChild(row);
             }
 
-            container.appendChild(table);
+            container.appendChild(table); // Add table to the container
         }
 
         // Function to highlight rows, columns, and cell
