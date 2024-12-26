@@ -6,130 +6,88 @@
     <title>Georgey Porgy’s Mega Table</title>
     <style>
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-        }
-
-        h1 {
             text-align: center;
-            margin: 10px 0;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin: 10px;
-            gap: 10px;
-        }
-
-        .controls label {
-            font-size: 16px;
-        }
-
-        .controls input, .controls button {
-            padding: 5px;
-            font-size: 14px;
-        }
-
-        #table-container {
-            overflow: auto;
-            height: calc(100vh - 150px); /* Adjust table height dynamically */
-            margin: 10px;
+            margin: 0;
         }
 
         table {
             border-collapse: collapse;
-            width: 100%;
-            min-width: 600px; /* Ensure minimum table width for small screens */
+            margin: 20px auto;
+            width: 90%;
         }
 
         th, td {
             border: 1px solid #ddd;
+            padding: 10px;
             text-align: center;
-            white-space: nowrap;
-            min-width: 80px;
-            padding: 8px;
-            font-size: 14px;
+            vertical-align: middle;
         }
 
         th {
             background-color: #f2f2f2;
             position: sticky;
             top: 0;
-            z-index: 3; /* Ensure it stays above other elements */
+            z-index: 2;
         }
 
-        th:first-child,
-        td:first-child {
+        th:first-child, td:first-child {
             position: sticky;
             left: 0;
             background-color: #f2f2f2;
-            z-index: 2; /* Lower z-index than top header */
+            z-index: 1;
         }
 
         tr:hover {
             background-color: #f9f9f9;
         }
 
-        td span {
-            display: block;
+        td {
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        td .multiplication {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        td .fraction {
             font-size: 12px;
         }
 
-        .highlight {
-            background-color: yellow;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            th, td {
-                font-size: 12px;
-                padding: 5px;
-                min-width: 70px;
-            }
-
-            td span {
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            th, td {
-                font-size: 10px;
-                padding: 4px;
-                min-width: 60px;
-            }
-
-            td span {
-                font-size: 9px;
-            }
+        input, button {
+            margin: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <h1>Georgey Porgy’s Mega Table</h1>
-    <div class="controls">
-        <div>
-            <label for="range">Table Range (e.g., 10 for 1-10): </label>
-            <input type="number" id="range" min="1" value="10">
-            <button onclick="generateTable()">Generate Table</button>
-        </div>
-        <div>
-            <label for="search">Search for a value (e.g., 12, 3/4, 0.75): </label>
-            <input type="text" id="search" placeholder="Enter value">
-            <button onclick="searchTable()">Search</button>
-        </div>
-    </div>
-    <div id="table-container">
-        <!-- The table will be dynamically generated here -->
-    </div>
+    <label for="range">Table Range (e.g., 10 for 1-10): </label>
+    <input type="number" id="range" min="1" value="10">
+    <button onclick="generateTable()">Generate Table</button>
+    <div id="table-container"></div>
 
     <script>
+        // Function to calculate the greatest common divisor (GCD)
+        function gcd(a, b) {
+            while (b) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
+        // Function to simplify a fraction
+        function simplifyFraction(numerator, denominator) {
+            const divisor = gcd(numerator, denominator);
+            return `${numerator / divisor}/${denominator / divisor}`;
+        }
+
         // Function to generate the table
         function generateTable() {
-            const range = parseInt(document.getElementById('range').value);
+            const range = parseInt(document.getElementById('range').value, 10);
             const container = document.getElementById('table-container');
             container.innerHTML = ''; // Clear any existing table
 
@@ -141,7 +99,7 @@
             headerRow.appendChild(emptyCell);
             for (let i = 1; i <= range; i++) {
                 const th = document.createElement('th');
-                th.textContent = i; // Header for numbers
+                th.textContent = i;
                 headerRow.appendChild(th);
             }
             table.appendChild(headerRow);
@@ -150,22 +108,27 @@
             for (let i = 1; i <= range; i++) {
                 const row = document.createElement('tr');
                 const headerCell = document.createElement('th');
-                headerCell.textContent = i; // Header for numbers
+                headerCell.textContent = i;
                 row.appendChild(headerCell);
 
                 for (let j = 1; j <= range; j++) {
                     const cell = document.createElement('td');
 
-                    // Create content
-                    const multiplication = i * j; // Multiplication result
-                    const fraction = `${i}/${j}`; // Division result as fraction
-                    const decimal = (i / j).toFixed(2); // Division result as decimal
+                    // Multiplication result
+                    const multiplication = i * j;
 
-                    // Format the content
+                    // Original fraction and its simplified form
+                    const originalFraction = `${i}/${j}`;
+                    const simplifiedFraction = simplifyFraction(i, j);
+
+                    // Decimal result
+                    const decimal = (i / j).toFixed(2);
+
+                    // Add content to the cell
                     cell.innerHTML = `
-                        <span>${multiplication}</span>
-                        <span>${fraction}</span>
-                        <span>${decimal}</span>
+                        <div class="multiplication">${multiplication}</div>
+                        <div class="fraction">${originalFraction} (${simplifiedFraction})</div>
+                        <div class="fraction">Decimal: ${decimal}</div>
                     `;
 
                     row.appendChild(cell);
@@ -173,21 +136,7 @@
                 table.appendChild(row);
             }
 
-            container.appendChild(table); // Add table to the container
-        }
-
-        // Function to search for a value in the table
-        function searchTable() {
-            const query = document.getElementById('search').value.trim();
-            const cells = document.querySelectorAll('td');
-            
-            cells.forEach(cell => {
-                cell.classList.remove('highlight'); // Clear previous highlights
-
-                if (cell.innerText.includes(query)) {
-                    cell.classList.add('highlight'); // Highlight matching cells
-                }
-            });
+            container.appendChild(table);
         }
     </script>
 </body>
