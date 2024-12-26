@@ -7,25 +7,20 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
         }
 
         table {
             border-collapse: collapse;
-            margin: 20px auto;
-            width: 90%;
+            width: 100%;
+            margin-top: 20px;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 10px 20px; /* Adjusted for horizontal rectangle */
             text-align: center;
-            vertical-align: middle;
+            position: relative;
             font-size: 14px;
-            font-weight: normal;
-            width: 120px;
-            height: 60px;
         }
 
         th {
@@ -42,58 +37,73 @@
             z-index: 1;
         }
 
-        tr:hover {
-            background-color: #faf9e5;
+        tr:hover td, tr:hover th {
+            background-color: #fff9e6; /* Pale yellow */
         }
 
-        td:hover {
-            background-color: yellow;
+        td.highlight {
+            background-color: #fff3c6; /* More visible yellow for the active box */
         }
 
-        table tr:hover td, table td:hover {
-            background-color: yellow !important;
+        td span {
+            display: block;
+        }
+
+        td .fraction {
+            margin-top: 5px;
+        }
+
+        td .gcd {
+            font-size: 12px;
+            margin-left: 5px; /* Space between fraction and GCD */
+        }
+
+        td .decimal {
+            margin-top: 5px;
         }
 
         input, button {
-            margin: 10px;
-            padding: 8px 12px;
-            font-size: 14px;
+            margin: 5px;
         }
+
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #controls label {
+            margin-right: 10px;
+        }
+
+        #controls input {
+            width: 100px;
+        }
+
     </style>
 </head>
 <body>
     <h1>Georgey Porgy’s Mega Table</h1>
-    <label for="range">Table Range (e.g., 10 for 1-10): </label>
-    <input type="number" id="range" min="1" value="10">
-    <button onclick="generateTable()">Generate Table</button>
-    <label for="search">Search Value: </label>
-    <input type="number" id="search" placeholder="Enter a value">
-    <button onclick="searchValue()">Search</button>
+    <div id="controls">
+        <div>
+            <label for="range">Table Range (e.g., 10 for 1-10):</label>
+            <input type="number" id="range" min="1" value="10">
+            <button onclick="generateTable()">Generate Table</button>
+        </div>
+        <div>
+            <label for="search">Search Value:</label>
+            <input type="text" id="search" placeholder="Enter a value">
+            <button onclick="searchValue()">Search</button>
+        </div>
+    </div>
+
     <div id="table-container"></div>
 
     <script>
-        // Function to calculate the greatest common divisor (GCD)
-        function gcd(a, b) {
-            while (b) {
-                [a, b] = [b, a % b];
-            }
-            return a;
-        }
-
-        // Function to simplify a fraction
-        function simplifyFraction(numerator, denominator) {
-            const divisor = gcd(numerator, denominator);
-            if (divisor === 1) {
-                return null; // Return null if no simplification is needed
-            }
-            return `${numerator / divisor}/${denominator / divisor}`;
-        }
-
-        // Function to generate the table
         function generateTable() {
-            const range = parseInt(document.getElementById('range').value, 10);
+            const range = parseInt(document.getElementById('range').value);
             const container = document.getElementById('table-container');
-            container.innerHTML = ''; // Clear any existing table
+            container.innerHTML = ''; // Clear existing table
 
             const table = document.createElement('table');
             const headerRow = document.createElement('tr');
@@ -118,74 +128,78 @@
                 for (let j = 1; j <= range; j++) {
                     const cell = document.createElement('td');
 
-                    // Multiplication result
                     const multiplication = i * j;
-
-                    // Original fraction and its simplified form
-                    const originalFraction = `${i}/${j}`;
-                    const simplifiedFraction = simplifyFraction(i, j);
-
-                    // Decimal result
+                    const fraction = `${i}/${j}`;
+                    const gcdValue = gcd(i, j);
+                    const reducedFraction = gcdValue > 1 ? `(${i / gcdValue}/${j / gcdValue})` : '';
                     const decimal = (i / j).toFixed(2);
 
-                    // Add content to the cell
                     cell.innerHTML = `
-                        <div>${multiplication}</div>
-                        <div>${originalFraction}${simplifiedFraction ? ` (${simplifiedFraction})` : ''}</div>
-                        <div>${decimal}</div>
+                        <span class="multiplication">${multiplication}</span>
+                        <span class="fraction">${fraction} <span class="gcd">${reducedFraction}</span></span>
+                        <span class="decimal">${decimal}</span>
                     `;
 
-                    // Highlight row and column on hover
-                    cell.addEventListener('mouseover', () => highlightRowCol(cell));
-                    cell.addEventListener('mouseout', clearHighlights);
+                    // Highlighting functionality
+                    cell.addEventListener('mouseover', () => highlight(cell, table, i, j));
+                    cell.addEventListener('mouseout', () => clearHighlights(table));
 
                     row.appendChild(cell);
                 }
                 table.appendChild(row);
             }
 
-            container.appendChild(table); // Add table to the container
+            container.appendChild(table);
         }
 
-        // Function to highlight the row and column
-        function highlightRowCol(cell) {
-            const table = cell.closest('table');
-            const rowIndex = cell.parentElement.rowIndex;
-            const cellIndex = cell.cellIndex;
+        function highlight(cell, table, rowIndex, colIndex) {
+            clearHighlights(table);
 
-            for (let i = 0; i < table.rows.length; i++) {
-                table.rows[i].cells[cellIndex]?.classList.add('highlight');
+            // Highlight the cell
+            cell.classList.add('highlight');
+
+            // Highlight the row and column
+            const rows = table.rows;
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].cells[colIndex].classList.add('highlight');
+                rows[rowIndex].cells[i].classList.add('highlight');
             }
-
-            for (let j = 0; j < table.rows[rowIndex].cells.length; j++) {
-                table.rows[rowIndex].cells[j]?.classList.add('highlight');
-            }
         }
 
-        // Function to clear all highlights
-        function clearHighlights() {
-            document.querySelectorAll('.highlight').forEach(cell => {
-                cell.classList.remove('highlight');
-            });
+        function clearHighlights(table) {
+            table.querySelectorAll('.highlight').forEach(cell => cell.classList.remove('highlight'));
         }
 
-        // Function to search for a value in the table
         function searchValue() {
-            const value = document.getElementById('search').value;
-            const cells = document.querySelectorAll('td');
+            const searchTerm = document.getElementById('search').value.trim();
+            const table = document.querySelector('table');
+            if (!table || !searchTerm) return;
 
-            // Clear previous highlights
-            cells.forEach(cell => {
-                cell.style.backgroundColor = '';
-            });
+            clearHighlights(table);
+            let found = false;
 
-            // Highlight matching cells
-            cells.forEach(cell => {
-                if (cell.textContent.includes(value)) {
-                    cell.style.backgroundColor = 'yellow';
+            table.querySelectorAll('td').forEach(cell => {
+                if (cell.textContent.includes(searchTerm)) {
+                    cell.classList.add('highlight');
+                    found = true;
                 }
             });
+
+            if (!found) {
+                alert('Value not found in the table.');
+            }
         }
+
+        function gcd(a, b) {
+            while (b !== 0) {
+                const temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        document.addEventListener('DOMContentLoaded', generateTable);
     </script>
 </body>
 </html>
