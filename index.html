@@ -37,8 +37,7 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            vertical-align: middle;
-            padding: 10px 15px;
+            padding: 10px 20px; /* Increased horizontal padding */
             position: relative;
         }
 
@@ -57,19 +56,20 @@
             z-index: 1;
         }
 
+        td {
+            font-size: 14px;
+            white-space: nowrap; /* Prevents fractions from wrapping */
+        }
+
         tr:hover {
             background-color: #ffffcc; /* Pale yellow */
         }
 
-        td {
-            font-size: 14px;
+        td.highlight {
+            background-color: #ffffcc; /* Pale yellow for hover lines */
         }
 
-        .highlight {
-            background-color: #ffffcc; /* Pale yellow */
-        }
-
-        .highlight-cell {
+        td.highlight-cell {
             background-color: #ffd700; /* Bright yellow for selected cell */
         }
 
