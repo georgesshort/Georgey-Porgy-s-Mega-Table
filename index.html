@@ -289,10 +289,11 @@
         const choicesContainer = document.getElementById('quiz-choices');
         choicesContainer.innerHTML = '';
 
-        questionData.options.forEach(choice => {
+        questionData.options.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice;
-            button.onclick = () => checkAnswer(choice);
+            button.onclick = () => checkAnswer(choice, button);
+            button.id = `choice-${index}`;
             choicesContainer.appendChild(button);
         });
 
@@ -300,13 +301,27 @@
     }
 
     // Function to check the answer
-    function checkAnswer(selectedAnswer) {
+    function checkAnswer(selectedAnswer, button) {
         const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
+
         if (selectedAnswer === correctAnswer) {
             score++;
+            button.innerHTML += " ✔"; // Green tick for correct answer
+            button.style.backgroundColor = "#4CAF50"; // Green background
+        } else {
+            button.innerHTML += " ✘"; // Red cross for incorrect answer
+            button.style.backgroundColor = "#F44336"; // Red background
         }
-        document.getElementById('quiz-result').textContent = 
-            `Your current score is: ${score}/${currentQuestionIndex + 1}`;
+
+        disableButtons(); // Disable all choices after one is selected
+    }
+
+    // Function to disable buttons after an answer is selected
+    function disableButtons() {
+        const buttons = document.getElementById('quiz-choices').children;
+        Array.from(buttons).forEach(button => {
+            button.disabled = true;
+        });
     }
 
     // Function to go to the next question
@@ -398,6 +413,7 @@
         padding: 10px;
         margin: 5px;
         cursor: pointer;
+        transition: background-color 0.3s;
     }
 
     #quiz-choices button {
@@ -415,5 +431,10 @@
 
     #next-question:hover {
         background-color: #45a049;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 </style>
