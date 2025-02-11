@@ -449,3 +449,43 @@
         opacity: 0.6;
     }
 </style>
+// Shuffle function for randomizing arrays
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+    }
+}
+
+// Your quiz questions array
+let questions = [
+    { question: "What is 2 + 2?", answers: ["3", "4", "5"], correct: "4" },
+    { question: "What is 5 * 3?", answers: ["12", "15", "18"], correct: "15" },
+    { question: "What is 9 / 3?", answers: ["2", "3", "4"], correct: "3" },
+    // Add more questions as needed
+];
+
+// Shuffle the questions and the answers
+shuffleArray(questions);
+questions.forEach(q => shuffleArray(q.answers));
+
+// Function to render questions
+function displayQuestions() {
+    const quizContainer = document.getElementById('quiz-container');
+    quizContainer.innerHTML = ''; // Clear any previous content
+
+    questions.forEach((q, index) => {
+        let questionBox = document.createElement('div');
+        questionBox.classList.add('question-box');
+        questionBox.innerHTML = `
+            <p>${q.question}</p>
+            <ul>
+                ${q.answers.map(answer => `<li class="answer">${answer}</li>`).join('')}
+            </ul>
+        `;
+        quizContainer.appendChild(questionBox);
+    });
+}
+
+// Call the function to display the quiz
+displayQuestions();
