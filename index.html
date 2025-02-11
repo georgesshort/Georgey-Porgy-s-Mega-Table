@@ -201,20 +201,25 @@
     </script>
 </body>
 </html>
-// Sample multiplication table array
+// Create a multiplication table (with values from 1 to 10 for simplicity)
 const multiplicationTable = [
-  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // 1
-  [2, 4, 6, 8, 10, 12, 14, 16, 18, 20], // 2
-  [3, 6, 9, 12, 15, 18, 21, 24, 27, 30], // 3
-  // Add more rows as needed
+  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],  // 1x1, 1x2, ..., 1x10
+  [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],  // 2x1, 2x2, ..., 2x10
+  [3, 6, 9, 12, 15, 18, 21, 24, 27, 30], // 3x1, 3x2, ..., 3x10
+  [4, 8, 12, 16, 20, 24, 28, 32, 36, 40], // 4x1, 4x2, ..., 4x10
+  [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], // 5x1, 5x2, ..., 5x10
+  [6, 12, 18, 24, 30, 36, 42, 48, 54, 60], // 6x1, 6x2, ..., 6x10
+  [7, 14, 21, 28, 35, 42, 49, 56, 63, 70], // 7x1, 7x2, ..., 7x10
+  [8, 16, 24, 32, 40, 48, 56, 64, 72, 80], // 8x1, 8x2, ..., 8x10
+  [9, 18, 27, 36, 45, 54, 63, 72, 81, 90], // 9x1, 9x2, ..., 9x10
+  [10, 20, 30, 40, 50, 60, 70, 80, 90, 100], // 10x1, 10x2, ..., 10x10
 ];
 
 // Function to get random multiplication question
 function generateMultiplicationQuestion() {
-  const row = Math.floor(Math.random() * multiplicationTable.length);
-  const col = Math.floor(Math.random() * multiplicationTable[row].length);
-  const num1 = row + 1;  // Row index represents the number
-  const num2 = col + 1;  // Column index represents the multiplier
+  const num1 = Math.floor(Math.random() * 10) + 1;  // Random number from 1 to 10
+  const num2 = Math.floor(Math.random() * 10) + 1;  // Random multiplier from 1 to 10
+  
   const answer = num1 * num2;
 
   const userAnswer = prompt(`What is ${num1} x ${num2}?`);
@@ -225,3 +230,6 @@ function generateMultiplicationQuestion() {
     alert(`Incorrect. The correct answer is ${answer}`);
   }
 }
+
+// Call the function to generate a multiplication question
+generateMultiplicationQuestion();
