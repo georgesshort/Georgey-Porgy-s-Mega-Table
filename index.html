@@ -201,8 +201,6 @@
         // Generate the default table
         window.onload = generateTable;
     </script>
-</body>
-</html>
 <div id="quiz-type-container">
     <h2>Select Quiz Type</h2>
     <button onclick="loadDecimalToFractionQuiz()">Decimal to Fraction</button>
@@ -245,7 +243,7 @@
         displayQuestion();
     }
 
-    // Function to generate the Fraction to Decimal quiz questions
+    // Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
     function generateFractionToDecimalQuiz() {
         const range = 10;
         const fractionDecimalPairs = generateFractionDecimalTable(range);
@@ -254,7 +252,7 @@
             type: 'fraction-to-decimal',
             question: `What is the decimal equivalent of the fraction ${pair.fraction}?`,
             correctAnswer: pair.decimal,
-            options: generateRandomOptions(pair.decimal, fractionDecimalPairs)
+            options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
         }));
 
         displayQuestion();
@@ -311,9 +309,22 @@
         } else {
             button.innerHTML += " ✘"; // Red cross for incorrect answer
             button.style.backgroundColor = "#F44336"; // Red background
+            displayCorrectAnswer(correctAnswer); // Display the correct answer
         }
 
         disableButtons(); // Disable all choices after one is selected
+    }
+
+    // Function to display the correct answer if the user selects wrong
+    function displayCorrectAnswer(correctAnswer) {
+        const choicesContainer = document.getElementById('quiz-choices');
+        const buttons = choicesContainer.children;
+        Array.from(buttons).forEach(button => {
+            if (button.textContent === correctAnswer) {
+                button.innerHTML += " ✔"; // Green tick for correct answer
+                button.style.backgroundColor = "#4CAF50"; // Green background
+            }
+        });
     }
 
     // Function to disable buttons after an answer is selected
@@ -338,7 +349,7 @@
     }
 
     // Function to generate random answer options
-    function generateRandomOptions(correctAnswer, fractionDecimalPairs) {
+    function generateRandomOptions(correctAnswer, fractionDecimalPairs, decimalOnly = false) {
         let options = [correctAnswer];
         while (options.length < 4) {
             let randomOption;
@@ -346,7 +357,7 @@
                 randomOption = Math.floor(Math.random() * 100);
             } else {
                 const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
-                randomOption = fractionDecimalPairs[randomIndex].fraction || fractionDecimalPairs[randomIndex].decimal;
+                randomOption = decimalOnly ? fractionDecimalPairs[randomIndex].decimal : fractionDecimalPairs[randomIndex].fraction;
             }
             if (!options.includes(randomOption)) {
                 options.push(randomOption);
