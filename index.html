@@ -234,8 +234,10 @@
         questionsAsked = 0;
         quizType = document.getElementById("quiz-type").value;
         document.getElementById("quiz-score").innerHTML = "";
+        document.getElementById("quiz-feedback").innerHTML = "";
+        document.getElementById("quiz-question").innerHTML = "Loading question...";
         extractNumbersFromTable();
-        nextQuestion();
+        setTimeout(nextQuestion, 500); // Small delay to ensure data loads
     }
 
     function extractNumbersFromTable() {
@@ -247,7 +249,7 @@
         let tableCells = document.querySelectorAll("td"); // Grab all table cells
         tableCells.forEach(cell => {
             let text = cell.innerText.trim();
-            if (text.match(/^\d+\/\d+$/)) { // Matches fractions like "7/6"
+            if (/^\d+\/\d+$/.test(text)) { // Matches fractions like "7/6"
                 fractionList.push(text);
                 let [num, den] = text.split('/').map(Number);
                 let decimalValue = (num / den).toFixed(5); // Convert fraction to decimal
@@ -258,6 +260,11 @@
                 numberList.push(text);
             }
         });
+
+        // Debugging output (remove after testing)
+        console.log("Fractions:", fractionList);
+        console.log("Decimals:", decimalList);
+        console.log("Numbers:", numberList);
     }
 
     function nextQuestion() {
@@ -288,6 +295,9 @@
             let fraction = fractionToDecimalMap[decimal] || "N/A"; // Find matching fraction
             questionText = `What is the fraction equivalent of ${decimal}?`;
             correctAnswer = fraction;
+        } else {
+            document.getElementById("quiz-question").innerHTML = "No valid data found in the table.";
+            return;
         }
 
         currentQuestion = { text: questionText, answer: correctAnswer };
