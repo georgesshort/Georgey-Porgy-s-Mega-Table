@@ -212,7 +212,7 @@
     </select>
     <button onclick="startQuiz()">Start Quiz</button>
     <div id="quiz-question" style="font-size: 24px; font-weight: bold; margin-top: 10px;"></div>
-    <input type="text" id="quiz-answer" placeholder="Your answer (e.g., 7/6)">
+    <input type="text" id="quiz-answer" placeholder="Your answer">
     <button onclick="submitAnswer()">Submit</button>
     <div id="quiz-feedback"></div>
     <div id="quiz-score"></div>
@@ -227,6 +227,7 @@
     let fractionList = [];
     let decimalList = [];
     let numberList = [];
+    let fractionToDecimalMap = {};
 
     function startQuiz() {
         score = 0;
@@ -241,11 +242,16 @@
         fractionList = [];
         decimalList = [];
         numberList = [];
+        fractionToDecimalMap = {};
+
         let tableCells = document.querySelectorAll("td"); // Grab all table cells
         tableCells.forEach(cell => {
             let text = cell.innerText.trim();
             if (text.match(/^\d+\/\d+$/)) { // Matches fractions like "7/6"
                 fractionList.push(text);
+                let [num, den] = text.split('/').map(Number);
+                let decimalValue = (num / den).toFixed(5); // Convert fraction to decimal
+                fractionToDecimalMap[decimalValue] = text; // Store fraction equivalent
             } else if (!isNaN(parseFloat(text)) && text.includes(".")) { // Detect decimals
                 decimalList.push(text);
             } else if (!isNaN(parseInt(text))) { // Detect whole numbers
@@ -270,17 +276,16 @@
             correctAnswer = (parseInt(num1) * parseInt(num2)).toString();
         } 
         
-        else if (quizType === "division" && fractionList.length > 1) {
+        else if (quizType === "division" && fractionList.length > 0) {
             let fraction = fractionList[Math.floor(Math.random() * fractionList.length)];
-            questionText = `Divide 1 by ${fraction}: (Answer as a fraction)`;
             let [num, den] = fraction.split('/').map(Number);
-            correctAnswer = `${den}/${num}`; // Reciprocal of the fraction
+            questionText = `What is ${fraction} as a decimal?`;
+            correctAnswer = (num / den).toFixed(5).replace(/\.?0+$/, ""); // Convert to decimal, trim trailing zeros
         } 
         
-        else if (quizType === "decimal" && decimalList.length > 0 && fractionList.length > 0) {
-            let randomIndex = Math.floor(Math.random() * decimalList.length);
-            let decimal = decimalList[randomIndex];
-            let fraction = fractionList[randomIndex % fractionList.length]; // Match with an available fraction
+        else if (quizType === "decimal" && decimalList.length > 0) {
+            let decimal = decimalList[Math.floor(Math.random() * decimalList.length)];
+            let fraction = fractionToDecimalMap[decimal] || "N/A"; // Find matching fraction
             questionText = `What is the fraction equivalent of ${decimal}?`;
             correctAnswer = fraction;
         }
