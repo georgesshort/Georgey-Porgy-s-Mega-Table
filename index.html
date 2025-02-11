@@ -211,8 +211,8 @@
         <option value="decimal">Decimal to Fraction</option>
     </select>
     <button onclick="startQuiz()">Start Quiz</button>
-    <div id="quiz-question" style="font-size: 24px; font-weight: bold;"></div>
-    <input type="text" id="quiz-answer" placeholder="Your answer (e.g., 3/4)">
+    <div id="quiz-question" style="font-size: 24px; font-weight: bold; margin-top: 10px;"></div>
+    <input type="text" id="quiz-answer" placeholder="Your answer (e.g., 7/6)">
     <button onclick="submitAnswer()">Submit</button>
     <div id="quiz-feedback"></div>
     <div id="quiz-score"></div>
@@ -224,87 +224,81 @@
     let score = 0;
     let totalQuestions = 10;
     let questionsAsked = 0;
-    let fractionList = []; // Store fractions from the table
+    let fractionList = [];
+    let decimalList = [];
+    let numberList = [];
 
     function startQuiz() {
         score = 0;
         questionsAsked = 0;
         quizType = document.getElementById("quiz-type").value;
         document.getElementById("quiz-score").innerHTML = "";
-        extractFractionsFromTable(); // Update the fraction list
+        extractNumbersFromTable();
         nextQuestion();
     }
 
-    function extractFractionsFromTable() {
+    function extractNumbersFromTable() {
         fractionList = [];
-        let tableCells = document.querySelectorAll(".fraction-cell"); // Ensure your table has this class for fractions
+        decimalList = [];
+        numberList = [];
+        let tableCells = document.querySelectorAll("td"); // Grab all table cells
         tableCells.forEach(cell => {
             let text = cell.innerText.trim();
-            if (text.includes("/")) fractionList.push(text);
+            if (text.match(/^\d+\/\d+$/)) { // Matches fractions like "7/6"
+                fractionList.push(text);
+            } else if (!isNaN(parseFloat(text)) && text.includes(".")) { // Detect decimals
+                decimalList.push(text);
+            } else if (!isNaN(parseInt(text))) { // Detect whole numbers
+                numberList.push(text);
+            }
         });
     }
 
-    function formatFraction(numerator, denominator) {
-        return `<span style="display: inline-block; text-align: center;">
-                  <span style="border-bottom: 1px solid black; display: block;">${numerator}</span>
-                  <span>${denominator}</span>
-                </span>`;
-    }
-
     function nextQuestion() {
-        let range = document.getElementById("range").value;
-        let num1 = Math.floor(Math.random() * range) + 1;
-        let num2 = Math.floor(Math.random() * range) + 1;
-
-        if (quizType === "multiplication") {
-            currentQuestion = { num1, num2, answer: num1 * num2 };
-            document.getElementById("quiz-question").innerHTML = `What is ${num1} × ${num2}?`;
-
-        } else if (quizType === "division" && fractionList.length > 0) {
-            let fraction = fractionList[Math.floor(Math.random() * fractionList.length)];
-            let [numerator, denominator] = fraction.split("/").map(Number);
-            currentQuestion = { num1: numerator, num2: denominator, answer: numerator / denominator };
-            document.getElementById("quiz-question").innerHTML = `What is ${formatFraction(numerator, denominator)} ÷ ${denominator}?`;
-
-        } else if (quizType === "decimal") {
-            let fraction = fractionList[Math.floor(Math.random() * fractionList.length)];
-            let [numerator, denominator] = fraction.split("/").map(Number);
-            let decimal = (numerator / denominator).toFixed(3);
-            currentQuestion = { fraction, answer: fraction };
-            document.getElementById("quiz-question").innerHTML = `Which fraction equals ${decimal}?`;
-
-        } else {
-            document.getElementById("quiz-feedback").innerHTML = "⚠️ No fractions available in the table!";
+        if (questionsAsked >= totalQuestions) {
+            document.getElementById("quiz-score").innerHTML = `Quiz finished! Final score: ${score}/${totalQuestions}`;
             return;
         }
 
+        let questionText = "";
+        let correctAnswer = "";
+
+        if (quizType === "multiplication" && numberList.length > 1) {
+            let num1 = numberList[Math.floor(Math.random() * numberList.length)];
+            let num2 = numberList[Math.floor(Math.random() * numberList.length)];
+            questionText = `What is ${num1} × ${num2}?`;
+            correctAnswer = (parseInt(num1) * parseInt(num2)).toString();
+        } 
+        
+        else if (quizType === "division" && fractionList.length > 1) {
+            let fraction = fractionList[Math.floor(Math.random() * fractionList.length)];
+            questionText = `Divide 1 by ${fraction}: (Answer as a fraction)`;
+            let [num, den] = fraction.split('/').map(Number);
+            correctAnswer = `${den}/${num}`; // Reciprocal of the fraction
+        } 
+        
+        else if (quizType === "decimal" && decimalList.length > 0 && fractionList.length > 0) {
+            let randomIndex = Math.floor(Math.random() * decimalList.length);
+            let decimal = decimalList[randomIndex];
+            let fraction = fractionList[randomIndex % fractionList.length]; // Match with an available fraction
+            questionText = `What is the fraction equivalent of ${decimal}?`;
+            correctAnswer = fraction;
+        }
+
+        currentQuestion = { text: questionText, answer: correctAnswer };
+        document.getElementById("quiz-question").innerHTML = questionText;
         document.getElementById("quiz-answer").value = "";
-        document.getElementById("quiz-feedback").innerHTML = "";
+        questionsAsked++;
     }
 
     function submitAnswer() {
         let userAnswer = document.getElementById("quiz-answer").value.trim();
-        let correctAnswer = currentQuestion.answer;
-
-        if (quizType === "decimal") {
-            correctAnswer = currentQuestion.fraction; // Expected fraction answer
-        } else if (quizType === "division") {
-            correctAnswer = correctAnswer.toFixed(3); // Compare as decimals for accuracy
-            userAnswer = parseFloat(userAnswer).toFixed(3);
-        }
-
-        if (userAnswer == correctAnswer) {
+        if (userAnswer === currentQuestion.answer) {
             document.getElementById("quiz-feedback").innerHTML = "✅ Correct!";
             score++;
         } else {
-            document.getElementById("quiz-feedback").innerHTML = `❌ Wrong. The correct answer was ${correctAnswer}.`;
+            document.getElementById("quiz-feedback").innerHTML = `❌ Wrong! The correct answer was: ${currentQuestion.answer}`;
         }
-
-        questionsAsked++;
-        if (questionsAsked < totalQuestions) {
-            setTimeout(nextQuestion, 1000);
-        } else {
-            document.getElementById("quiz-score").innerHTML = `Final Score: ${score} / ${totalQuestions}`;
-        }
+        nextQuestion();
     }
 </script>
