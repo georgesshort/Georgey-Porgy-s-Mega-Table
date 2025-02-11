@@ -201,104 +201,114 @@
     </script>
 </body>
 </html>
-<div id="quiz-container">
-    <h2>Georgey's Math Quiz</h2>
-    <div id="quiz-question"></div>
-    <div id="quiz-choices"></div>
-    <button id="next-question" onclick="nextQuestion()">Next Question</button>
-    <div id="quiz-result"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz</title>
+</head>
+<body>
+    <div id="quiz-container">
+        <h2>Math Quiz</h2>
+        <div id="quiz-question"></div>
+        <div id="quiz-choices"></div>
+        <button id="next-question" onclick="nextQuestion()">Next Question</button>
+        <div id="quiz-result"></div>
+    </div>
 
-<script>
-    // A list of multiplication, fraction-to-decimal, and decimal-to-fraction questions
-    const quizQuestions = [];
-    const range = 10; // Adjust this based on your table range
+    <script>
+        // Generate a list of questions (multiplication, fraction-to-decimal, and decimal-to-fraction)
+        const quizQuestions = [];
+        const range = 10; // Adjust this based on your table range
 
-    // Generate questions for multiplication, fraction-to-decimal, and decimal-to-fraction
-    for (let i = 1; i <= range; i++) {
-        for (let j = 1; j <= range; j++) {
-            // Multiplication questions
-            quizQuestions.push({
-                type: 'multiplication',
-                question: `What is ${i} x ${j}?`,
-                correctAnswer: i * j,
-                options: generateRandomOptions(i * j)
-            });
-            
-            // Fraction-to-decimal questions
-            const fraction = `${i}/${j}`;
-            const decimalAnswer = (i / j).toFixed(2); // Rounded to 2 decimals
-            quizQuestions.push({
-                type: 'fraction-to-decimal',
-                question: `What is ${fraction} as a decimal?`,
-                correctAnswer: decimalAnswer,
-                options: generateRandomOptions(decimalAnswer)
-            });
-            
-            // Decimal-to-fraction questions
-            const decimalValue = (i / j).toFixed(2);
-            const fractionAnswer = `${i}/${j}`;
-            quizQuestions.push({
-                type: 'decimal-to-fraction',
-                question: `What is ${decimalValue} as a fraction?`,
-                correctAnswer: fractionAnswer,
-                options: generateRandomOptions(fractionAnswer)
-            });
+        // Function to generate random answer options
+        function generateRandomOptions(correctAnswer) {
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                const randomOption = (Math.random() * 100).toFixed(2);
+                if (!options.includes(randomOption)) {
+                    options.push(randomOption);
+                }
+            }
+            return options.sort(() => Math.random() - 0.5); // Shuffle the options
         }
-    }
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+        // Generate multiplication, fraction-to-decimal, and decimal-to-fraction questions
+        for (let i = 1; i <= range; i++) {
+            for (let j = 1; j <= range; j++) {
+                // Multiplication questions
+                quizQuestions.push({
+                    type: 'multiplication',
+                    question: `What is ${i} x ${j}?`,
+                    correctAnswer: i * j,
+                    options: generateRandomOptions(i * j)
+                });
 
-    function generateRandomOptions(correctAnswer) {
-        // Generate random answer choices, including the correct one
-        let options = [correctAnswer];
-        while (options.length < 4) {
-            const randomOption = (Math.random() * 100).toFixed(2);
-            if (!options.includes(randomOption)) {
-                options.push(randomOption);
+                // Fraction-to-decimal questions
+                const fraction = `${i}/${j}`;
+                const decimalAnswer = (i / j).toFixed(2);
+                quizQuestions.push({
+                    type: 'fraction-to-decimal',
+                    question: `What is ${fraction} as a decimal?`,
+                    correctAnswer: decimalAnswer,
+                    options: generateRandomOptions(decimalAnswer)
+                });
+
+                // Decimal-to-fraction questions
+                const decimalValue = (i / j).toFixed(2);
+                const fractionAnswer = `${i}/${j}`;
+                quizQuestions.push({
+                    type: 'decimal-to-fraction',
+                    question: `What is ${decimalValue} as a fraction?`,
+                    correctAnswer: fractionAnswer,
+                    options: generateRandomOptions(fractionAnswer)
+                });
             }
         }
-        return options.sort(() => Math.random() - 0.5); // Shuffle the options
-    }
 
-    function displayQuestion() {
-        const questionData = quizQuestions[currentQuestionIndex];
-        document.getElementById('quiz-question').textContent = questionData.question;
+        let currentQuestionIndex = 0;
+        let score = 0;
 
-        const choicesContainer = document.getElementById('quiz-choices');
-        choicesContainer.innerHTML = '';
-        
-        questionData.options.forEach(choice => {
-            const button = document.createElement('button');
-            button.textContent = choice;
-            button.onclick = () => checkAnswer(choice);
-            choicesContainer.appendChild(button);
-        });
-    }
+        function displayQuestion() {
+            const questionData = quizQuestions[currentQuestionIndex];
+            document.getElementById('quiz-question').textContent = questionData.question;
 
-    function checkAnswer(selectedAnswer) {
-        const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
-        if (selectedAnswer == correctAnswer) {
-            score++;
+            const choicesContainer = document.getElementById('quiz-choices');
+            choicesContainer.innerHTML = '';
+
+            questionData.options.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.onclick = () => checkAnswer(choice);
+                choicesContainer.appendChild(button);
+            });
         }
-        document.getElementById('quiz-result').textContent = 
-            `Your current score is: ${score}/${currentQuestionIndex + 1}`;
-    }
 
-    function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < quizQuestions.length) {
-            displayQuestion();
-            document.getElementById('quiz-result').textContent = '';
-        } else {
-            document.getElementById('quiz-container').innerHTML = `
-                <h2>Quiz Completed!</h2>
-                <p>Your final score is: ${score}/${quizQuestions.length}</p>
-            `;
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
+            if (selectedAnswer == correctAnswer) {
+                score++;
+            }
+            document.getElementById('quiz-result').textContent = 
+                `Your current score is: ${score}/${currentQuestionIndex + 1}`;
         }
-    }
 
-    // Initialize the quiz
-    displayQuestion();
-</script>
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizQuestions.length) {
+                displayQuestion();
+                document.getElementById('quiz-result').textContent = '';
+            } else {
+                document.getElementById('quiz-container').innerHTML = `
+                    <h2>Quiz Completed!</h2>
+                    <p>Your final score is: ${score}/${quizQuestions.length}</p>
+                `;
+            }
+        }
+
+        // Initialize the quiz
+        displayQuestion();
+    </script>
+</body>
+</html>
