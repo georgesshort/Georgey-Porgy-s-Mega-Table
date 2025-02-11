@@ -206,22 +206,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decimal to Fraction Quiz</title>
+    <title>Math Quiz</title>
+    <style>
+        .quiz-container {
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
-    <div id="quiz-container">
+    <!-- First quiz: Fraction to Decimal -->
+    <div id="fraction-to-decimal-quiz" class="quiz-container">
+        <h2>Fraction to Decimal Quiz</h2>
+        <div id="fraction-to-decimal-question"></div>
+        <div id="fraction-to-decimal-choices"></div>
+        <button id="next-fraction-to-decimal" onclick="nextFractionDecimalQuestion()">Next Question</button>
+        <div id="fraction-to-decimal-result"></div>
+    </div>
+
+    <!-- Second quiz: Decimal to Fraction -->
+    <div id="decimal-to-fraction-quiz" class="quiz-container">
         <h2>Decimal to Fraction Quiz</h2>
-        <div id="quiz-question"></div>
-        <div id="quiz-choices"></div>
-        <button id="next-question" onclick="nextQuestion()">Next Question</button>
-        <div id="quiz-result"></div>
+        <div id="decimal-to-fraction-question"></div>
+        <div id="decimal-to-fraction-choices"></div>
+        <button id="next-decimal-to-fraction" onclick="nextDecimalFractionQuestion()">Next Question</button>
+        <div id="decimal-to-fraction-result"></div>
     </div>
 
     <script>
-        // Function to generate random fractions and corresponding decimal values
+        // Function to generate random fractions and corresponding decimal values for both quizzes
         function generateFractionDecimalTable(range) {
             const fractionDecimalPairs = [];
-
             for (let numerator = 1; numerator <= range; numerator++) {
                 for (let denominator = 1; denominator <= range; denominator++) {
                     const decimalValue = (numerator / denominator).toFixed(2); // Get decimal value rounded to two decimals
@@ -234,8 +248,21 @@
             return fractionDecimalPairs;
         }
 
-        // Function to generate random answer options
-        function generateRandomOptions(correctAnswer, fractionDecimalPairs) {
+        // Function to generate random answer options for fraction-to-decimal quiz
+        function generateRandomDecimalOptions(correctAnswer, fractionDecimalPairs) {
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
+                const randomOption = fractionDecimalPairs[randomIndex].decimal;
+                if (!options.includes(randomOption)) {
+                    options.push(randomOption);
+                }
+            }
+            return options.sort(() => Math.random() - 0.5); // Shuffle the options
+        }
+
+        // Function to generate random answer options for decimal-to-fraction quiz
+        function generateRandomFractionOptions(correctAnswer, fractionDecimalPairs) {
             let options = [correctAnswer];
             while (options.length < 4) {
                 const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
@@ -251,61 +278,120 @@
         const range = 10; // Adjust to 20 for a 20x20 grid
         const fractionDecimalPairs = generateFractionDecimalTable(range);
 
-        let quizQuestions = [];
+        // Fraction to Decimal Quiz Questions
+        let fractionToDecimalQuestions = [];
         fractionDecimalPairs.forEach(pair => {
-            quizQuestions.push({
-                type: 'decimal-to-fraction',
-                question: `What fraction is equal to the decimal ${pair.decimal}?`,
-                correctAnswer: pair.fraction,
-                options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
+            fractionToDecimalQuestions.push({
+                type: 'fraction-to-decimal',
+                question: `What decimal is equal to the fraction ${pair.fraction}?`,
+                correctAnswer: pair.decimal,
+                options: generateRandomDecimalOptions(pair.decimal, fractionDecimalPairs)
             });
         });
 
-        let currentQuestionIndex = 0;
-        let score = 0;
+        // Decimal to Fraction Quiz Questions
+        let decimalToFractionQuestions = [];
+        fractionDecimalPairs.forEach(pair => {
+            decimalToFractionQuestions.push({
+                type: 'decimal-to-fraction',
+                question: `What fraction is equal to the decimal ${pair.decimal}?`,
+                correctAnswer: pair.fraction,
+                options: generateRandomFractionOptions(pair.fraction, fractionDecimalPairs)
+            });
+        });
 
-        function displayQuestion() {
-            const questionData = quizQuestions[currentQuestionIndex];
-            document.getElementById('quiz-question').textContent = questionData.question;
+        let currentFractionToDecimalQuestionIndex = 0;
+        let currentDecimalToFractionQuestionIndex = 0;
+        let scoreFractionToDecimal = 0;
+        let scoreDecimalToFraction = 0;
 
-            const choicesContainer = document.getElementById('quiz-choices');
+        // Display Fraction to Decimal Question
+        function displayFractionToDecimalQuestion() {
+            const questionData = fractionToDecimalQuestions[currentFractionToDecimalQuestionIndex];
+            document.getElementById('fraction-to-decimal-question').textContent = questionData.question;
+
+            const choicesContainer = document.getElementById('fraction-to-decimal-choices');
             choicesContainer.innerHTML = '';
 
             questionData.options.forEach(choice => {
                 const button = document.createElement('button');
                 button.textContent = choice;
-                button.onclick = () => checkAnswer(choice);
+                button.onclick = () => checkFractionToDecimalAnswer(choice);
                 choicesContainer.appendChild(button);
             });
         }
 
-        function checkAnswer(selectedAnswer) {
-            const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
+        // Check answer for Fraction to Decimal Quiz
+        function checkFractionToDecimalAnswer(selectedAnswer) {
+            const correctAnswer = fractionToDecimalQuestions[currentFractionToDecimalQuestionIndex].correctAnswer;
             if (selectedAnswer === correctAnswer) {
-                score++;
+                scoreFractionToDecimal++;
             }
-            document.getElementById('quiz-result').textContent = 
-                `Your current score is: ${score}/${currentQuestionIndex + 1}`;
+            document.getElementById('fraction-to-decimal-result').textContent = 
+                `Your current score is: ${scoreFractionToDecimal}/${currentFractionToDecimalQuestionIndex + 1}`;
         }
 
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizQuestions.length) {
-                displayQuestion();
-                document.getElementById('quiz-result').textContent = '';
+        // Display Decimal to Fraction Question
+        function displayDecimalToFractionQuestion() {
+            const questionData = decimalToFractionQuestions[currentDecimalToFractionQuestionIndex];
+            document.getElementById('decimal-to-fraction-question').textContent = questionData.question;
+
+            const choicesContainer = document.getElementById('decimal-to-fraction-choices');
+            choicesContainer.innerHTML = '';
+
+            questionData.options.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.onclick = () => checkDecimalToFractionAnswer(choice);
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        // Check answer for Decimal to Fraction Quiz
+        function checkDecimalToFractionAnswer(selectedAnswer) {
+            const correctAnswer = decimalToFractionQuestions[currentDecimalToFractionQuestionIndex].correctAnswer;
+            if (selectedAnswer === correctAnswer) {
+                scoreDecimalToFraction++;
+            }
+            document.getElementById('decimal-to-fraction-result').textContent = 
+                `Your current score is: ${scoreDecimalToFraction}/${currentDecimalToFractionQuestionIndex + 1}`;
+        }
+
+        // Go to next Fraction to Decimal question
+        function nextFractionDecimalQuestion() {
+            currentFractionToDecimalQuestionIndex++;
+            if (currentFractionToDecimalQuestionIndex < fractionToDecimalQuestions.length) {
+                displayFractionToDecimalQuestion();
+                document.getElementById('fraction-to-decimal-result').textContent = '';
             } else {
-                document.getElementById('quiz-container').innerHTML = `
-                    <h2>Quiz Completed!</h2>
-                    <p>Your final score is: ${score}/${quizQuestions.length}</p>
+                document.getElementById('fraction-to-decimal-quiz').innerHTML = `
+                    <h2>Fraction to Decimal Quiz Completed!</h2>
+                    <p>Your final score is: ${scoreFractionToDecimal}/${fractionToDecimalQuestions.length}</p>
                 `;
             }
         }
 
-        // Shuffle the questions for random order
-        quizQuestions = quizQuestions.sort(() => Math.random() - 0.5);
+        // Go to next Decimal to Fraction question
+        function nextDecimalFractionQuestion() {
+            currentDecimalToFractionQuestionIndex++;
+            if (currentDecimalToFractionQuestionIndex < decimalToFractionQuestions.length) {
+                displayDecimalToFractionQuestion();
+                document.getElementById('decimal-to-fraction-result').textContent = '';
+            } else {
+                document.getElementById('decimal-to-fraction-quiz').innerHTML = `
+                    <h2>Decimal to Fraction Quiz Completed!</h2>
+                    <p>Your final score is: ${scoreDecimalToFraction}/${decimalToFractionQuestions.length}</p>
+                `;
+            }
+        }
 
-        // Initialize the quiz
-        displayQuestion();
+        // Shuffle the questions for both quizzes for random order
+        fractionToDecimalQuestions = fractionToDecimalQuestions.sort(() => Math.random() - 0.5);
+        decimalToFractionQuestions = decimalToFractionQuestions.sort(() => Math.random() - 0.5);
+
+        // Initialize the quizzes
+        displayFractionToDecimalQuestion();
+        displayDecimalToFractionQuestion();
     </script>
 </body>
 </html>
