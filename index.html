@@ -208,10 +208,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Quiz</title>
     <style>
-        .quiz-container {
-            margin-bottom: 30px;
-        }
-    </style>
+    .quiz-container {
+        display: flex; /* This enables side-by-side display */
+        justify-content: space-between; /* Adds space between the two quizzes */
+        gap: 20px; /* Adds gap between the quizzes */
+        margin-bottom: 30px; /* Keeps your existing margin */
+    }
+
+    .quiz {
+        width: 45%; /* Each quiz takes up 45% of the container width */
+    }
+</style>
 </head>
 <body>
     <!-- First quiz: Fraction to Decimal -->
