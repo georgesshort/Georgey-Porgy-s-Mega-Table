@@ -9,7 +9,6 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            text-align: center;
         }
 
         h1 {
@@ -39,7 +38,9 @@
             border: 1px solid #ddd;
             text-align: center;
             padding: 8px 25px;
+            position: relative;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         th {
@@ -49,21 +50,33 @@
             z-index: 2;
         }
 
-        .quiz-container {
-            margin-top: 20px;
-            padding: 10px;
-            border: 2px solid #ddd;
-            display: inline-block;
-            text-align: center;
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #f2f2f2;
+            z-index: 1;
         }
 
-        .quiz-container button {
-            margin-top: 10px;
+        tr:hover {
+            background-color: #ffffcc;
         }
 
-        .quiz-feedback {
-            margin-top: 10px;
-            font-weight: bold;
+        td.highlight {
+            background-color: #ffffcc;
+        }
+
+        td.highlight-cell {
+            background-color: #ffd700;
+        }
+
+        /* Highlight square root boxes with the desired color */
+        td.highlight-square-root {
+            background-color: rgb(255, 249, 207); /* Soft yellow for square roots */
+        }
+
+        .controls input[type="number"] {
+            width: 80px;
         }
     </style>
 </head>
@@ -72,28 +85,19 @@
     <div class="controls">
         <div>
             <label for="range">Table Range (e.g., 10 for 1-10):</label>
-            <input type="number" id="range" min="1" value="10">
+            <input type="number" id="range" min="1" value="100">
             <button onclick="generateTable()">Generate Table</button>
         </div>
+        <div>
+            <label for="search">Search Value:</label>
+            <input type="text" id="search" placeholder="Enter a value">
+            <button onclick="searchTable()">Search</button>
+        </div>
     </div>
-
     <div id="table-container"></div>
 
-    <!-- Quiz Section -->
-    <div class="quiz-container">
-        <h2>Quiz Time!</h2>
-        <p id="quiz-question">Press "Start Quiz" to begin.</p>
-        <input type="number" id="quiz-answer" placeholder="Enter your answer">
-        <button onclick="checkAnswer()">Submit</button>
-        <button onclick="generateQuestion()">Next Question</button>
-        <p class="quiz-feedback" id="quiz-feedback"></p>
-        <p>Score: <span id="quiz-score">0</span></p>
-    </div>
-
     <script>
-        let correctAnswer = 0;
-        let score = 0;
-
+        // Function to calculate GCD
         function gcd(a, b) {
             while (b !== 0) {
                 [a, b] = [b, a % b];
@@ -101,27 +105,30 @@
             return a;
         }
 
+        // Function to generate the table
         function generateTable() {
             const range = document.getElementById('range').value;
             const container = document.getElementById('table-container');
-            container.innerHTML = '';
+            container.innerHTML = ''; // Clear any existing table
 
             const table = document.createElement('table');
             const headerRow = document.createElement('tr');
 
+            // Create table headers
             const emptyCell = document.createElement('th');
             headerRow.appendChild(emptyCell);
             for (let i = 1; i <= range; i++) {
                 const th = document.createElement('th');
-                th.textContent = i;
+                th.textContent = i; // Header for numbers
                 headerRow.appendChild(th);
             }
             table.appendChild(headerRow);
 
+            // Create table rows
             for (let i = 1; i <= range; i++) {
                 const row = document.createElement('tr');
                 const headerCell = document.createElement('th');
-                headerCell.textContent = i;
+                headerCell.textContent = i; // Header for numbers
                 row.appendChild(headerCell);
 
                 for (let j = 1; j <= range; j++) {
@@ -131,58 +138,132 @@
                     const simplifiedFraction = divisor > 1 ? `(${i / divisor}/${j / divisor})` : '';
                     const decimal = (i / j).toFixed(2);
 
+                    const product = i * j;
                     cell.innerHTML = `
-                        <div>${i * j}</div>
+                        <div>${product}</div>
                         <div>${fraction} ${simplifiedFraction}</div>
                         <div>${decimal}</div>
                     `;
+
+                    // Check for square roots (i == j) and apply style
+                    if (i === j) {
+                        cell.classList.add('highlight-square-root');
+                    }
+
+                    cell.addEventListener('mouseover', () => highlight(cell, i, j, range));
+                    cell.addEventListener('mouseout', clearHighlight);
+
                     row.appendChild(cell);
                 }
                 table.appendChild(row);
             }
 
-            container.appendChild(table);
+            container.appendChild(table); // Add table to the container
         }
 
-        function generateQuestion() {
-            const range = document.getElementById('range').value;
-            let num1 = Math.floor(Math.random() * range) + 1;
-            let num2 = Math.floor(Math.random() * range) + 1;
-
-            let questionType = Math.random() < 0.5 ? "multiplication" : "division";
-
-            let questionText;
-            if (questionType === "multiplication") {
-                correctAnswer = num1 * num2;
-                questionText = `What is ${num1} × ${num2}?`;
-            } else {
-                correctAnswer = num1;
-                let product = num1 * num2;
-                questionText = `What is ${product} ÷ ${num2}?`;
+        // Function to highlight rows, columns, and cell
+        function highlight(cell, row, col, range) {
+            clearHighlight();
+            const table = document.querySelector('table');
+            for (let i = 1; i <= range; i++) {
+                table.rows[row].cells[i].classList.add('highlight');
+                table.rows[i].cells[col].classList.add('highlight');
             }
-
-            document.getElementById('quiz-question').textContent = questionText;
-            document.getElementById('quiz-answer').value = '';
-            document.getElementById('quiz-feedback').textContent = '';
+            cell.classList.add('highlight-cell');
         }
 
-        function checkAnswer() {
-            const userAnswer = parseInt(document.getElementById('quiz-answer').value);
+        // Function to clear highlight
+        function clearHighlight() {
+            document.querySelectorAll('.highlight, .highlight-cell').forEach(cell => {
+                cell.classList.remove('highlight', 'highlight-cell');
+            });
+        }
 
-            if (!isNaN(userAnswer)) {
-                if (userAnswer === correctAnswer) {
-                    document.getElementById('quiz-feedback').textContent = "Correct! 🎉";
-                    score++;
+        // Function to search for a value
+        function searchTable() {
+            const value = document.getElementById('search').value.trim();
+            if (!value) return;
+
+            const table = document.querySelector('table');
+            if (!table) return;
+
+            table.querySelectorAll('td').forEach(cell => {
+                if (cell.textContent.includes(value)) {
+                    cell.classList.add('highlight-cell');
                 } else {
-                    document.getElementById('quiz-feedback').textContent = `Wrong! The correct answer was ${correctAnswer}. 😢`;
+                    cell.classList.remove('highlight-cell');
                 }
-                document.getElementById('quiz-score').textContent = score;
-            } else {
-                document.getElementById('quiz-feedback').textContent = "Please enter a number.";
-            }
+            });
         }
 
+        // Generate the default table
         window.onload = generateTable;
     </script>
 </body>
 </html>
+<!-- Quiz Controls -->
+<div class="quiz-container">
+    <h2>Quick Math Quiz</h2>
+    <label for="quiz-type">Choose Quiz Type:</label>
+    <select id="quiz-type">
+        <option value="multiplication">Multiplication</option>
+        <option value="division">Division</option>
+    </select>
+    <button onclick="startQuiz()">Start Quiz</button>
+    <div id="quiz-question"></div>
+    <input type="number" id="quiz-answer" placeholder="Your answer">
+    <button onclick="submitAnswer()">Submit</button>
+    <div id="quiz-feedback"></div>
+    <div id="quiz-score"></div>
+</div>
+
+<script>
+    let quizType = "multiplication";
+    let currentQuestion = {};
+    let score = 0;
+    let totalQuestions = 5;
+    let questionsAsked = 0;
+
+    function startQuiz() {
+        score = 0;
+        questionsAsked = 0;
+        quizType = document.getElementById("quiz-type").value;
+        document.getElementById("quiz-score").innerHTML = "";
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        let range = document.getElementById("range").value;
+        let num1 = Math.floor(Math.random() * range) + 1;
+        let num2 = Math.floor(Math.random() * range) + 1;
+
+        if (quizType === "multiplication") {
+            currentQuestion = { num1, num2, answer: num1 * num2 };
+            document.getElementById("quiz-question").innerHTML = `What is ${num1} × ${num2}?`;
+        } else {
+            let product = num1 * num2; // Ensure clean division
+            currentQuestion = { num1: product, num2, answer: num1 };
+            document.getElementById("quiz-question").innerHTML = `What is ${product} ÷ ${num2}?`;
+        }
+
+        document.getElementById("quiz-answer").value = "";
+        document.getElementById("quiz-feedback").innerHTML = "";
+    }
+
+    function submitAnswer() {
+        let userAnswer = parseInt(document.getElementById("quiz-answer").value);
+        if (userAnswer === currentQuestion.answer) {
+            document.getElementById("quiz-feedback").innerHTML = "✅ Correct!";
+            score++;
+        } else {
+            document.getElementById("quiz-feedback").innerHTML = `❌ Wrong. The correct answer was ${currentQuestion.answer}.`;
+        }
+
+        questionsAsked++;
+        if (questionsAsked < totalQuestions) {
+            setTimeout(nextQuestion, 1000);
+        } else {
+            document.getElementById("quiz-score").innerHTML = `Final Score: ${score} / ${totalQuestions}`;
+        }
+    }
+</script>
