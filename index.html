@@ -4,16 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Georgey Porgy’s Mega Table</title>
-
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5363S3NVB1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-5363S3NVB1');
-    </script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,10 +37,10 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 8px 25px; /* Make boxes wider */
+            padding: 8px 25px;
             position: relative;
             font-size: 14px;
-            white-space: nowrap; /* Prevent fractions from wrapping */
+            white-space: nowrap;
         }
 
         th {
@@ -69,15 +59,20 @@
         }
 
         tr:hover {
-            background-color: #ffffcc; /* Pale yellow */
+            background-color: #ffffcc;
         }
 
         td.highlight {
-            background-color: #ffffcc; /* Pale yellow for hover lines */
+            background-color: #ffffcc;
         }
 
         td.highlight-cell {
-            background-color: #ffd700; /* Bright yellow for selected cell */
+            background-color: #ffd700;
+        }
+
+        /* Highlight square root boxes with the desired color */
+        td.highlight-square-root {
+            background-color: rgb(255, 249, 207); /* Soft yellow for square roots */
         }
 
         .controls input[type="number"] {
@@ -143,11 +138,17 @@
                     const simplifiedFraction = divisor > 1 ? `(${i / divisor}/${j / divisor})` : '';
                     const decimal = (i / j).toFixed(2);
 
+                    const product = i * j;
                     cell.innerHTML = `
-                        <div>${i * j}</div>
+                        <div>${product}</div>
                         <div>${fraction} ${simplifiedFraction}</div>
                         <div>${decimal}</div>
                     `;
+
+                    // Check for square roots (i == j) and apply style
+                    if (i === j) {
+                        cell.classList.add('highlight-square-root');
+                    }
 
                     cell.addEventListener('mouseover', () => highlight(cell, i, j, range));
                     cell.addEventListener('mouseout', clearHighlight);
