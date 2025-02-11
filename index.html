@@ -201,119 +201,27 @@
     </script>
 </body>
 </html>
-<!-- Quiz Controls -->
-<div class="quiz-container">
-    <h2>Quick Math Quiz</h2>
-    <label for="quiz-type">Choose Quiz Type:</label>
-    <select id="quiz-type">
-        <option value="multiplication">Multiplication</option>
-        <option value="division">Division</option>
-        <option value="decimal">Decimal to Fraction</option>
-    </select>
-    <button onclick="startQuiz()">Start Quiz</button>
-    <div id="quiz-question" style="font-size: 24px; font-weight: bold; margin-top: 10px;"></div>
-    <input type="text" id="quiz-answer" placeholder="Your answer">
-    <button onclick="submitAnswer()">Submit</button>
-    <div id="quiz-feedback"></div>
-    <div id="quiz-score"></div>
-</div>
+// Sample multiplication table array
+const multiplicationTable = [
+  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // 1
+  [2, 4, 6, 8, 10, 12, 14, 16, 18, 20], // 2
+  [3, 6, 9, 12, 15, 18, 21, 24, 27, 30], // 3
+  // Add more rows as needed
+];
 
-<script>
-    let quizType = "multiplication";
-    let currentQuestion = {};
-    let score = 0;
-    let totalQuestions = 10;
-    let questionsAsked = 0;
-    let fractionList = [];
-    let decimalList = [];
-    let numberList = [];
-    let fractionToDecimalMap = {};
+// Function to get random multiplication question
+function generateMultiplicationQuestion() {
+  const row = Math.floor(Math.random() * multiplicationTable.length);
+  const col = Math.floor(Math.random() * multiplicationTable[row].length);
+  const num1 = row + 1;  // Row index represents the number
+  const num2 = col + 1;  // Column index represents the multiplier
+  const answer = num1 * num2;
 
-    function startQuiz() {
-        score = 0;
-        questionsAsked = 0;
-        quizType = document.getElementById("quiz-type").value;
-        document.getElementById("quiz-score").innerHTML = "";
-        document.getElementById("quiz-feedback").innerHTML = "";
-        document.getElementById("quiz-question").innerHTML = "Loading question...";
-        extractNumbersFromTable();
-        setTimeout(nextQuestion, 500); // Small delay to ensure data loads
-    }
+  const userAnswer = prompt(`What is ${num1} x ${num2}?`);
 
-    function extractNumbersFromTable() {
-        fractionList = [];
-        decimalList = [];
-        numberList = [];
-        fractionToDecimalMap = {};
-
-        let tableCells = document.querySelectorAll("td"); // Grab all table cells
-        tableCells.forEach(cell => {
-            let text = cell.innerText.trim();
-            if (/^\d+\/\d+$/.test(text)) { // Matches fractions like "7/6"
-                fractionList.push(text);
-                let [num, den] = text.split('/').map(Number);
-                let decimalValue = (num / den).toFixed(5); // Convert fraction to decimal
-                fractionToDecimalMap[decimalValue] = text; // Store fraction equivalent
-            } else if (!isNaN(parseFloat(text)) && text.includes(".")) { // Detect decimals
-                decimalList.push(text);
-            } else if (!isNaN(parseInt(text))) { // Detect whole numbers
-                numberList.push(text);
-            }
-        });
-
-        // Debugging output (remove after testing)
-        console.log("Fractions:", fractionList);
-        console.log("Decimals:", decimalList);
-        console.log("Numbers:", numberList);
-    }
-
-    function nextQuestion() {
-        if (questionsAsked >= totalQuestions) {
-            document.getElementById("quiz-score").innerHTML = `Quiz finished! Final score: ${score}/${totalQuestions}`;
-            return;
-        }
-
-        let questionText = "";
-        let correctAnswer = "";
-
-        if (quizType === "multiplication" && numberList.length > 1) {
-            let num1 = numberList[Math.floor(Math.random() * numberList.length)];
-            let num2 = numberList[Math.floor(Math.random() * numberList.length)];
-            questionText = `What is ${num1} × ${num2}?`;
-            correctAnswer = (parseInt(num1) * parseInt(num2)).toString();
-        } 
-        
-        else if (quizType === "division" && fractionList.length > 0) {
-            let fraction = fractionList[Math.floor(Math.random() * fractionList.length)];
-            let [num, den] = fraction.split('/').map(Number);
-            questionText = `What is ${fraction} as a decimal?`;
-            correctAnswer = (num / den).toFixed(5).replace(/\.?0+$/, ""); // Convert to decimal, trim trailing zeros
-        } 
-        
-        else if (quizType === "decimal" && decimalList.length > 0) {
-            let decimal = decimalList[Math.floor(Math.random() * decimalList.length)];
-            let fraction = fractionToDecimalMap[decimal] || "N/A"; // Find matching fraction
-            questionText = `What is the fraction equivalent of ${decimal}?`;
-            correctAnswer = fraction;
-        } else {
-            document.getElementById("quiz-question").innerHTML = "No valid data found in the table.";
-            return;
-        }
-
-        currentQuestion = { text: questionText, answer: correctAnswer };
-        document.getElementById("quiz-question").innerHTML = questionText;
-        document.getElementById("quiz-answer").value = "";
-        questionsAsked++;
-    }
-
-    function submitAnswer() {
-        let userAnswer = document.getElementById("quiz-answer").value.trim();
-        if (userAnswer === currentQuestion.answer) {
-            document.getElementById("quiz-feedback").innerHTML = "✅ Correct!";
-            score++;
-        } else {
-            document.getElementById("quiz-feedback").innerHTML = `❌ Wrong! The correct answer was: ${currentQuestion.answer}`;
-        }
-        nextQuestion();
-    }
-</script>
+  if (parseInt(userAnswer) === answer) {
+    alert("Correct!");
+  } else {
+    alert(`Incorrect. The correct answer is ${answer}`);
+  }
+}
