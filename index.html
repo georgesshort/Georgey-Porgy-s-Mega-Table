@@ -25,7 +25,7 @@
         .controls input,
         .controls button {
             margin-right: 10px;
-            font-size: 16px;
+            font-size: 12px;
         }
 
         table {
@@ -37,9 +37,9 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 8px 25px;
+            padding: 8px 16px;
             position: relative;
-            font-size: 14px;
+            font-size: 12px;
             white-space: nowrap;
         }
 
@@ -85,7 +85,7 @@
     <div class="controls">
         <div>
             <label for="range">Table Range (e.g., 10 for 1-10):</label>
-            <input type="number" id="range" min="1" value="100">
+            <input type="number" id="range" min="1" value="15">
             <button onclick="generateTable()">Generate Table</button>
         </div>
         <div>
@@ -209,12 +209,21 @@
     <title>Math Quiz</title>
     <style>
     .quiz-container {
-        display: flex; /* This enables side-by-side display */
-        justify-content: space-between; /* Adds space between the two quizzes */
-        gap: 20px; /* Adds gap between the quizzes */
-        margin-bottom: 30px; /* Keeps your existing margin */
-    }
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #ccc; /* Added border to visually check the container */
+    padding: 20px; /* Added padding for spacing */
+    background-color: #f9f9f9; /* Light background color to help see the layout */
+}
 
+.quiz {
+    width: 45%; /* Ensures each quiz takes up 45% width */
+    background-color: #fff; /* Makes the quiz background white */
+    border: 1px solid #ddd; /* Border for each quiz */
+    padding: 10px; /* Padding inside each quiz for spacing */
+}
     .quiz {
         width: 45%; /* Each quiz takes up 45% of the container width */
     }
