@@ -215,7 +215,6 @@
     <button id="next-question" onclick="nextQuestion()">Next Question</button>
     <div id="quiz-result" style="margin-top: 10px;"></div>
 </div>
-
 <script>
     const quizTypes = {
         'decimal-to-fraction': 'Decimal to Fraction Quiz',
@@ -227,6 +226,7 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let quizQuestions = [];
+    let questionPool = [];
 
     // Function to generate the Decimal to Fraction quiz questions
     function generateDecimalToFractionQuiz() {
@@ -240,6 +240,9 @@
             options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
         }));
 
+        // Randomize the questions before starting
+        questionPool = [...quizQuestions];
+        questionPool = shuffleArray(questionPool);
         displayQuestion();
     }
 
@@ -255,6 +258,9 @@
             options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
         }));
 
+        // Randomize the questions before starting
+        questionPool = [...quizQuestions];
+        questionPool = shuffleArray(questionPool);
         displayQuestion();
     }
 
@@ -275,12 +281,20 @@
             }
         }
 
+        // Randomize the questions before starting
+        questionPool = [...quizQuestions];
+        questionPool = shuffleArray(questionPool);
         displayQuestion();
+    }
+
+    // Function to shuffle an array randomly
+    function shuffleArray(array) {
+        return array.sort(() => Math.random() - 0.5);
     }
 
     // Function to display the quiz question and options
     function displayQuestion() {
-        const questionData = quizQuestions[currentQuestionIndex];
+        const questionData = questionPool[currentQuestionIndex];
         document.getElementById('quiz-title').textContent = quizTypes[currentQuizType];
         document.getElementById('quiz-question').textContent = questionData.question;
 
@@ -300,7 +314,7 @@
 
     // Function to check the answer
     function checkAnswer(selectedAnswer, button) {
-        const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
+        const correctAnswer = questionPool[currentQuestionIndex].correctAnswer;
 
         if (selectedAnswer === correctAnswer) {
             score++;
@@ -338,12 +352,12 @@
     // Function to go to the next question
     function nextQuestion() {
         currentQuestionIndex++;
-        if (currentQuestionIndex < quizQuestions.length) {
+        if (currentQuestionIndex < questionPool.length) {
             displayQuestion();
         } else {
             document.getElementById('quiz-container').innerHTML = `
                 <h2>Quiz Completed!</h2>
-                <p>Your final score is: ${score}/${quizQuestions.length}</p>
+                <p>Your final score is: ${score}/${questionPool.length}</p>
             `;
         }
     }
