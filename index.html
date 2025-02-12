@@ -217,229 +217,183 @@
 </div>
 <script>
     const quizTypes = {
-        'decimal-to-fraction': 'Decimal to Fraction Quiz',
-        'fraction-to-decimal': 'Fraction to Decimal Quiz',
-        'multiplication': 'Multiplication Quiz'
-    };
+    'decimal-to-fraction': 'Decimal to Fraction Quiz',
+    'fraction-to-decimal': 'Fraction to Decimal Quiz',
+    'multiplication': 'Multiplication Quiz'
+};
 
-    let currentQuizType = '';
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let quizQuestions = [];
+let currentQuizType = '';
+let currentQuestionIndex = 0;
+let score = 0;
+let quizQuestions = [];
+let gridSize = 10; // Default grid size, can be updated to 15x15 or 20x20
 
-    // Function to generate the Decimal to Fraction quiz questions
-    function generateDecimalToFractionQuiz() {
-        const fractionDecimalPairs = generateFractionDecimalTable(10); // Default 10x10 grid
+// Function to generate the Decimal to Fraction quiz questions
+function generateDecimalToFractionQuiz() {
+    const fractionDecimalPairs = generateFractionDecimalTable(gridSize); // Use gridSize
 
-        quizQuestions = fractionDecimalPairs.map(pair => ({
-            type: 'decimal-to-fraction',
-            question: `What fraction is equal to the decimal ${pair.decimal}?`,
-            correctAnswer: pair.fraction,
-            options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
-        }));
+    quizQuestions = fractionDecimalPairs.map(pair => ({
+        type: 'decimal-to-fraction',
+        question: `What fraction is equal to the decimal ${pair.decimal}?`,
+        correctAnswer: pair.fraction,
+        options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
+    }));
 
-        displayQuestion();
-    }
+    displayQuestion();
+}
 
-    // Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
-    function generateFractionToDecimalQuiz() {
-        const fractionDecimalPairs = generateFractionDecimalTable(10); // Default 10x10 grid
+// Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
+function generateFractionToDecimalQuiz() {
+    const fractionDecimalPairs = generateFractionDecimalTable(gridSize); // Use gridSize
 
-        quizQuestions = fractionDecimalPairs.map(pair => ({
-            type: 'fraction-to-decimal',
-            question: `What is the decimal equivalent of the fraction ${pair.fraction}?`,
-            correctAnswer: pair.decimal,
-            options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
-        }));
+    quizQuestions = fractionDecimalPairs.map(pair => ({
+        type: 'fraction-to-decimal',
+        question: `What is the decimal equivalent of the fraction ${pair.fraction}?`,
+        correctAnswer: pair.decimal,
+        options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
+    }));
 
-        displayQuestion();
-    }
+    displayQuestion();
+}
 
-    // Function to generate the Multiplication quiz questions
-    function generateMultiplicationQuiz() {
-        quizQuestions = [];
-        for (let i = 1; i <= 10; i++) {
-            for (let j = 1; j <= 10; j++) {
-                const correctAnswer = i * j;
-                quizQuestions.push({
-                    type: 'multiplication',
-                    question: `${i} × ${j} = ?`,
-                    correctAnswer: correctAnswer,
-                    options: generateRandomOptions(correctAnswer, [])
-                });
-            }
+// Function to generate the Multiplication quiz questions
+function generateMultiplicationQuiz() {
+    quizQuestions = [];
+    for (let i = 1; i <= gridSize; i++) { // Use gridSize for dynamic multiplication grid
+        for (let j = 1; j <= gridSize; j++) {
+            const correctAnswer = i * j;
+            quizQuestions.push({
+                type: 'multiplication',
+                question: `${i} × ${j} = ?`,
+                correctAnswer: correctAnswer,
+                options: generateRandomOptions(correctAnswer, [])
+            });
         }
-        displayQuestion();
+    }
+    displayQuestion();
+}
+
+// Function to display the quiz question and options
+function displayQuestion() {
+    const questionData = quizQuestions[currentQuestionIndex];
+    document.getElementById('quiz-title').textContent = quizTypes[currentQuizType];
+    document.getElementById('quiz-question').textContent = questionData.question;
+
+    const choicesContainer = document.getElementById('quiz-choices');
+    choicesContainer.innerHTML = '';
+
+    questionData.options.forEach((choice, index) => {
+        const button = document.createElement('button');
+        button.textContent = choice;
+        button.onclick = () => checkAnswer(choice, button);
+        button.id = `choice-${index}`;
+        choicesContainer.appendChild(button);
+    });
+
+    document.getElementById('quiz-result').textContent = '';
+}
+
+// Function to check the answer
+function checkAnswer(selectedAnswer, button) {
+    const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
+
+    if (selectedAnswer === correctAnswer) {
+        score++;
+        button.innerHTML += " ✔"; // Green tick for correct answer
+        button.style.backgroundColor = "#4CAF50"; // Green background
+    } else {
+        button.innerHTML += " ✘"; // Red cross for incorrect answer
+        button.style.backgroundColor = "#F44336"; // Red background
+        highlightCorrectAnswer(correctAnswer); // Highlight correct answer
     }
 
-    // Function to display the quiz question and options
-    function displayQuestion() {
-        const questionData = quizQuestions[currentQuestionIndex];
-        document.getElementById('quiz-title').textContent = quizTypes[currentQuizType];
-        document.getElementById('quiz-question').textContent = questionData.question;
+    disableButtons(); // Disable all choices after one is selected
+}
 
-        const choicesContainer = document.getElementById('quiz-choices');
-        choicesContainer.innerHTML = '';
-
-        questionData.options.forEach((choice, index) => {
-            const button = document.createElement('button');
-            button.textContent = choice;
-            button.onclick = () => checkAnswer(choice, button);
-            button.id = `choice-${index}`;
-            choicesContainer.appendChild(button);
-        });
-
-        document.getElementById('quiz-result').textContent = '';
-    }
-
-    // Function to check the answer
-    function checkAnswer(selectedAnswer, button) {
-        const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
-
-        if (selectedAnswer === correctAnswer) {
-            score++;
+// Function to highlight the correct answer
+function highlightCorrectAnswer(correctAnswer) {
+    const choicesContainer = document.getElementById('quiz-choices');
+    const buttons = choicesContainer.children;
+    Array.from(buttons).forEach(button => {
+        if (button.textContent === correctAnswer) {
             button.innerHTML += " ✔"; // Green tick for correct answer
             button.style.backgroundColor = "#4CAF50"; // Green background
+        }
+    });
+}
+
+// Function to disable buttons after an answer is selected
+function disableButtons() {
+    const buttons = document.getElementById('quiz-choices').children;
+    Array.from(buttons).forEach(button => {
+        button.disabled = true;
+    });
+}
+
+// Function to go to the next question
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizQuestions.length) {
+        displayQuestion();
+    } else {
+        document.getElementById('quiz-container').innerHTML = `
+            <h2>Quiz Completed!</h2>
+            <p>Your final score is: ${score}/${quizQuestions.length}</p>
+        `;
+    }
+}
+
+// Function to generate random answer options
+function generateRandomOptions(correctAnswer, fractionDecimalPairs, decimalOnly = false) {
+    let options = [correctAnswer];
+    while (options.length < 4) {
+        let randomOption;
+        if (currentQuizType === 'multiplication') {
+            randomOption = Math.floor(Math.random() * 100);
         } else {
-            button.innerHTML += " ✘"; // Red cross for incorrect answer
-            button.style.backgroundColor = "#F44336"; // Red background
-            highlightCorrectAnswer(correctAnswer); // Highlight correct answer
+            const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
+            randomOption = decimalOnly ? fractionDecimalPairs[randomIndex].decimal : fractionDecimalPairs[randomIndex].fraction;
         }
-
-        disableButtons(); // Disable all choices after one is selected
-    }
-
-    // Function to highlight the correct answer
-    function highlightCorrectAnswer(correctAnswer) {
-        const choicesContainer = document.getElementById('quiz-choices');
-        const buttons = choicesContainer.children;
-        Array.from(buttons).forEach(button => {
-            if (button.textContent === correctAnswer) {
-                button.innerHTML += " ✔"; // Green tick for correct answer
-                button.style.backgroundColor = "#4CAF50"; // Green background
-            }
-        });
-    }
-
-    // Function to disable buttons after an answer is selected
-    function disableButtons() {
-        const buttons = document.getElementById('quiz-choices').children;
-        Array.from(buttons).forEach(button => {
-            button.disabled = true;
-        });
-    }
-
-    // Function to go to the next question
-    function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < quizQuestions.length) {
-            displayQuestion();
-        } else {
-            document.getElementById('quiz-container').innerHTML = `
-                <h2>Quiz Completed!</h2>
-                <p>Your final score is: ${score}/${quizQuestions.length}</p>
-            `;
+        if (!options.includes(randomOption)) {
+            options.push(randomOption);
         }
     }
+    return options.sort(() => Math.random() - 0.5);
+}
 
-    // Function to generate random answer options
-    function generateRandomOptions(correctAnswer, fractionDecimalPairs, decimalOnly = false) {
-        let options = [correctAnswer];
-        while (options.length < 4) {
-            let randomOption;
-            if (currentQuizType === 'multiplication') {
-                randomOption = Math.floor(Math.random() * 100);
-            } else {
-                const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
-                randomOption = decimalOnly ? fractionDecimalPairs[randomIndex].decimal : fractionDecimalPairs[randomIndex].fraction;
-            }
-            if (!options.includes(randomOption)) {
-                options.push(randomOption);
-            }
+// Function to generate the fraction-decimal table with dynamic grid size
+function generateFractionDecimalTable(range) {
+    const fractionDecimalPairs = [];
+    for (let numerator = 1; numerator <= range; numerator++) {
+        for (let denominator = 1; denominator <= range; denominator++) {
+            const decimalValue = (numerator / denominator).toFixed(2);
+            fractionDecimalPairs.push({
+                fraction: `${numerator}/${denominator}`,
+                decimal: decimalValue
+            });
         }
-        return options.sort(() => Math.random() - 0.5);
     }
+    return fractionDecimalPairs;
+}
 
-    // Function to generate the fraction-decimal table
-    function generateFractionDecimalTable(range) {
-        const fractionDecimalPairs = [];
-        for (let numerator = 1; numerator <= range; numerator++) {
-            for (let denominator = 1; denominator <= range; denominator++) {
-                const decimalValue = (numerator / denominator).toFixed(2);
-                fractionDecimalPairs.push({
-                    fraction: `${numerator}/${denominator}`,
-                    decimal: decimalValue
-                });
-            }
-        }
-        return fractionDecimalPairs;
-    }
+// Load the selected quiz type
+function loadDecimalToFractionQuiz() {
+    currentQuizType = 'decimal-to-fraction';
+    score = 0;
+    currentQuestionIndex = 0;
+    generateDecimalToFractionQuiz();
+}
 
-    // Load the selected quiz type
-    function loadDecimalToFractionQuiz() {
-        currentQuizType = 'decimal-to-fraction';
-        score = 0;
-        currentQuestionIndex = 0;
-        generateDecimalToFractionQuiz();
-    }
+function loadFractionToDecimalQuiz() {
+    currentQuizType = 'fraction-to-decimal';
+    score = 0;
+    currentQuestionIndex = 0;
+    generateFractionToDecimalQuiz();
+}
 
-    function loadFractionToDecimalQuiz() {
-        currentQuizType = 'fraction-to-decimal';
-        score = 0;
-        currentQuestionIndex = 0;
-        generateFractionToDecimalQuiz();
-    }
-
-    function loadMultiplicationQuiz() {
-        currentQuizType = 'multiplication';
-        score = 0;
-        currentQuestionIndex = 0;
-        generateMultiplicationQuiz();
-    }
-</script>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-
-    #quiz-container {
-        font-size: 16px;
-        margin-top: 20px;
-    }
-
-    h2, h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    button {
-        font-size: 16px;
-        padding: 10px;
-        margin: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    #quiz-choices button {
-        display: block;
-        margin-bottom: 10px;
-        width: 100%;
-    }
-
-    #next-question {
-        margin-top: 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-    }
-
-    #next-question:hover {
-        background-color: #45a049;
-    }
-
-    button:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-</style>
+function loadMultiplicationQuiz() {
+    currentQuizType = 'multiplication';
+    score = 0;
+    currentQuestionIndex = 0;
+    generateMultiplicationQuiz();
+}
