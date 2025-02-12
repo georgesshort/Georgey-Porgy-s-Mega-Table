@@ -9,12 +9,10 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            font-size: 10px;
         }
 
         h1 {
             text-align: center;
-            font-size: 12px; /* Adjusted title font size */
         }
 
         .controls {
@@ -27,7 +25,7 @@
         .controls input,
         .controls button {
             margin-right: 10px;
-            font-size: 10px; /* Reduced font size */
+            font-size: 16px;
         }
 
         table {
@@ -39,9 +37,9 @@
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 4px 12px; /* Reduced padding for smaller cells */
+            padding: 8px 25px;
             position: relative;
-            font-size: 10px; /* Reduced font size */
+            font-size: 14px;
             white-space: nowrap;
         }
 
@@ -78,7 +76,7 @@
         }
 
         .controls input[type="number"] {
-            width: 60px; /* Adjusted input box width */
+            width: 80px;
         }
     </style>
 </head>
@@ -201,199 +199,5 @@
         // Generate the default table
         window.onload = generateTable;
     </script>
-<div id="quiz-type-container">
-    <h2>Select Quiz Type</h2>
-    <button onclick="loadDecimalToFractionQuiz()">Decimal to Fraction</button>
-    <button onclick="loadFractionToDecimalQuiz()">Fraction to Decimal</button>
-    <button onclick="loadMultiplicationQuiz()">Multiplication</button>
-</div>
-
-<div id="quiz-container" style="margin-top: 20px;">
-    <h3 id="quiz-title">Quiz</h3>
-    <div id="quiz-question"></div>
-    <div id="quiz-choices"></div>
-    <button id="next-question" onclick="nextQuestion()">Next Question</button>
-    <div id="quiz-result" style="margin-top: 10px;"></div>
-</div>
-<script>
-    const quizTypes = {
-    'decimal-to-fraction': 'Decimal to Fraction Quiz',
-    'fraction-to-decimal': 'Fraction to Decimal Quiz',
-    'multiplication': 'Multiplication Quiz'
-};
-
-let currentQuizType = '';
-let currentQuestionIndex = 0;
-let score = 0;
-let quizQuestions = [];
-let gridSize = 10; // Default grid size, can be updated to 15x15 or 20x20
-
-// Function to generate the Decimal to Fraction quiz questions
-function generateDecimalToFractionQuiz() {
-    const fractionDecimalPairs = generateFractionDecimalTable(gridSize); // Use gridSize
-
-    quizQuestions = fractionDecimalPairs.map(pair => ({
-        type: 'decimal-to-fraction',
-        question: `What fraction is equal to the decimal ${pair.decimal}?`,
-        correctAnswer: pair.fraction,
-        options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
-    }));
-
-    displayQuestion();
-}
-
-// Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
-function generateFractionToDecimalQuiz() {
-    const fractionDecimalPairs = generateFractionDecimalTable(gridSize); // Use gridSize
-
-    quizQuestions = fractionDecimalPairs.map(pair => ({
-        type: 'fraction-to-decimal',
-        question: `What is the decimal equivalent of the fraction ${pair.fraction}?`,
-        correctAnswer: pair.decimal,
-        options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
-    }));
-
-    displayQuestion();
-}
-
-// Function to generate the Multiplication quiz questions
-function generateMultiplicationQuiz() {
-    quizQuestions = [];
-    for (let i = 1; i <= gridSize; i++) { // Use gridSize for dynamic multiplication grid
-        for (let j = 1; j <= gridSize; j++) {
-            const correctAnswer = i * j;
-            quizQuestions.push({
-                type: 'multiplication',
-                question: `${i} × ${j} = ?`,
-                correctAnswer: correctAnswer,
-                options: generateRandomOptions(correctAnswer, [])
-            });
-        }
-    }
-    displayQuestion();
-}
-
-// Function to display the quiz question and options
-function displayQuestion() {
-    const questionData = quizQuestions[currentQuestionIndex];
-    document.getElementById('quiz-title').textContent = quizTypes[currentQuizType];
-    document.getElementById('quiz-question').textContent = questionData.question;
-
-    const choicesContainer = document.getElementById('quiz-choices');
-    choicesContainer.innerHTML = '';
-
-    questionData.options.forEach((choice, index) => {
-        const button = document.createElement('button');
-        button.textContent = choice;
-        button.onclick = () => checkAnswer(choice, button);
-        button.id = `choice-${index}`;
-        choicesContainer.appendChild(button);
-    });
-
-    document.getElementById('quiz-result').textContent = '';
-}
-
-// Function to check the answer
-function checkAnswer(selectedAnswer, button) {
-    const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
-
-    if (selectedAnswer === correctAnswer) {
-        score++;
-        button.innerHTML += " ✔"; // Green tick for correct answer
-        button.style.backgroundColor = "#4CAF50"; // Green background
-    } else {
-        button.innerHTML += " ✘"; // Red cross for incorrect answer
-        button.style.backgroundColor = "#F44336"; // Red background
-        highlightCorrectAnswer(correctAnswer); // Highlight correct answer
-    }
-
-    disableButtons(); // Disable all choices after one is selected
-}
-
-// Function to highlight the correct answer
-function highlightCorrectAnswer(correctAnswer) {
-    const choicesContainer = document.getElementById('quiz-choices');
-    const buttons = choicesContainer.children;
-    Array.from(buttons).forEach(button => {
-        if (button.textContent === correctAnswer) {
-            button.innerHTML += " ✔"; // Green tick for correct answer
-            button.style.backgroundColor = "#4CAF50"; // Green background
-        }
-    });
-}
-
-// Function to disable buttons after an answer is selected
-function disableButtons() {
-    const buttons = document.getElementById('quiz-choices').children;
-    Array.from(buttons).forEach(button => {
-        button.disabled = true;
-    });
-}
-
-// Function to go to the next question
-function nextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < quizQuestions.length) {
-        displayQuestion();
-    } else {
-        document.getElementById('quiz-container').innerHTML = `
-            <h2>Quiz Completed!</h2>
-            <p>Your final score is: ${score}/${quizQuestions.length}</p>
-        `;
-    }
-}
-
-// Function to generate random answer options
-function generateRandomOptions(correctAnswer, fractionDecimalPairs, decimalOnly = false) {
-    let options = [correctAnswer];
-    while (options.length < 4) {
-        let randomOption;
-        if (currentQuizType === 'multiplication') {
-            randomOption = Math.floor(Math.random() * 100);
-        } else {
-            const randomIndex = Math.floor(Math.random() * fractionDecimalPairs.length);
-            randomOption = decimalOnly ? fractionDecimalPairs[randomIndex].decimal : fractionDecimalPairs[randomIndex].fraction;
-        }
-        if (!options.includes(randomOption)) {
-            options.push(randomOption);
-        }
-    }
-    return options.sort(() => Math.random() - 0.5);
-}
-
-// Function to generate the fraction-decimal table with dynamic grid size
-function generateFractionDecimalTable(range) {
-    const fractionDecimalPairs = [];
-    for (let numerator = 1; numerator <= range; numerator++) {
-        for (let denominator = 1; denominator <= range; denominator++) {
-            const decimalValue = (numerator / denominator).toFixed(2);
-            fractionDecimalPairs.push({
-                fraction: `${numerator}/${denominator}`,
-                decimal: decimalValue
-            });
-        }
-    }
-    return fractionDecimalPairs;
-}
-
-// Load the selected quiz type
-function loadDecimalToFractionQuiz() {
-    currentQuizType = 'decimal-to-fraction';
-    score = 0;
-    currentQuestionIndex = 0;
-    generateDecimalToFractionQuiz();
-}
-
-function loadFractionToDecimalQuiz() {
-    currentQuizType = 'fraction-to-decimal';
-    score = 0;
-    currentQuestionIndex = 0;
-    generateFractionToDecimalQuiz();
-}
-
-function loadMultiplicationQuiz() {
-    currentQuizType = 'multiplication';
-    score = 0;
-    currentQuestionIndex = 0;
-    generateMultiplicationQuiz();
-}
+</body>
+</html>
