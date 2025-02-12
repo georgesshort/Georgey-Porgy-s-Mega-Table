@@ -226,12 +226,11 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let quizQuestions = [];
-    let questionPool = [];
+    let currentGridSize = 10; // Default grid size, will be updated based on user selection
 
     // Function to generate the Decimal to Fraction quiz questions
     function generateDecimalToFractionQuiz() {
-        const range = 10;
-        const fractionDecimalPairs = generateFractionDecimalTable(range);
+        const fractionDecimalPairs = generateFractionDecimalTable(currentGridSize);
 
         quizQuestions = fractionDecimalPairs.map(pair => ({
             type: 'decimal-to-fraction',
@@ -240,16 +239,12 @@
             options: generateRandomOptions(pair.fraction, fractionDecimalPairs)
         }));
 
-        // Randomize the questions before starting
-        questionPool = [...quizQuestions];
-        questionPool = shuffleArray(questionPool);
         displayQuestion();
     }
 
     // Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
     function generateFractionToDecimalQuiz() {
-        const range = 10;
-        const fractionDecimalPairs = generateFractionDecimalTable(range);
+        const fractionDecimalPairs = generateFractionDecimalTable(currentGridSize);
 
         quizQuestions = fractionDecimalPairs.map(pair => ({
             type: 'fraction-to-decimal',
@@ -258,19 +253,14 @@
             options: generateRandomOptions(pair.decimal, fractionDecimalPairs, true) // Ensure all options are decimal
         }));
 
-        // Randomize the questions before starting
-        questionPool = [...quizQuestions];
-        questionPool = shuffleArray(questionPool);
         displayQuestion();
     }
 
     // Function to generate the Multiplication quiz questions
     function generateMultiplicationQuiz() {
-        const range = 10;
         quizQuestions = [];
-
-        for (let i = 1; i <= range; i++) {
-            for (let j = 1; j <= range; j++) {
+        for (let i = 1; i <= currentGridSize; i++) {
+            for (let j = 1; j <= currentGridSize; j++) {
                 const correctAnswer = i * j;
                 quizQuestions.push({
                     type: 'multiplication',
@@ -280,21 +270,12 @@
                 });
             }
         }
-
-        // Randomize the questions before starting
-        questionPool = [...quizQuestions];
-        questionPool = shuffleArray(questionPool);
         displayQuestion();
-    }
-
-    // Function to shuffle an array randomly
-    function shuffleArray(array) {
-        return array.sort(() => Math.random() - 0.5);
     }
 
     // Function to display the quiz question and options
     function displayQuestion() {
-        const questionData = questionPool[currentQuestionIndex];
+        const questionData = quizQuestions[currentQuestionIndex];
         document.getElementById('quiz-title').textContent = quizTypes[currentQuizType];
         document.getElementById('quiz-question').textContent = questionData.question;
 
@@ -314,7 +295,7 @@
 
     // Function to check the answer
     function checkAnswer(selectedAnswer, button) {
-        const correctAnswer = questionPool[currentQuestionIndex].correctAnswer;
+        const correctAnswer = quizQuestions[currentQuestionIndex].correctAnswer;
 
         if (selectedAnswer === correctAnswer) {
             score++;
@@ -323,14 +304,14 @@
         } else {
             button.innerHTML += " ✘"; // Red cross for incorrect answer
             button.style.backgroundColor = "#F44336"; // Red background
-            displayCorrectAnswer(correctAnswer); // Display the correct answer
+            highlightCorrectAnswer(correctAnswer); // Highlight correct answer
         }
 
         disableButtons(); // Disable all choices after one is selected
     }
 
-    // Function to display the correct answer if the user selects wrong
-    function displayCorrectAnswer(correctAnswer) {
+    // Function to highlight the correct answer
+    function highlightCorrectAnswer(correctAnswer) {
         const choicesContainer = document.getElementById('quiz-choices');
         const buttons = choicesContainer.children;
         Array.from(buttons).forEach(button => {
@@ -352,12 +333,12 @@
     // Function to go to the next question
     function nextQuestion() {
         currentQuestionIndex++;
-        if (currentQuestionIndex < questionPool.length) {
+        if (currentQuestionIndex < quizQuestions.length) {
             displayQuestion();
         } else {
             document.getElementById('quiz-container').innerHTML = `
                 <h2>Quiz Completed!</h2>
-                <p>Your final score is: ${score}/${questionPool.length}</p>
+                <p>Your final score is: ${score}/${quizQuestions.length}</p>
             `;
         }
     }
@@ -396,22 +377,25 @@
     }
 
     // Load the selected quiz type
-    function loadDecimalToFractionQuiz() {
+    function loadDecimalToFractionQuiz(gridSize) {
         currentQuizType = 'decimal-to-fraction';
+        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateDecimalToFractionQuiz();
     }
 
-    function loadFractionToDecimalQuiz() {
+    function loadFractionToDecimalQuiz(gridSize) {
         currentQuizType = 'fraction-to-decimal';
+        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateFractionToDecimalQuiz();
     }
 
-    function loadMultiplicationQuiz() {
+    function loadMultiplicationQuiz(gridSize) {
         currentQuizType = 'multiplication';
+        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateMultiplicationQuiz();
