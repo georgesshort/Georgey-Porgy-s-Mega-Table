@@ -226,11 +226,10 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let quizQuestions = [];
-    let currentGridSize = 10; // Default grid size, will be updated based on user selection
 
     // Function to generate the Decimal to Fraction quiz questions
     function generateDecimalToFractionQuiz() {
-        const fractionDecimalPairs = generateFractionDecimalTable(currentGridSize);
+        const fractionDecimalPairs = generateFractionDecimalTable(10); // Default 10x10 grid
 
         quizQuestions = fractionDecimalPairs.map(pair => ({
             type: 'decimal-to-fraction',
@@ -244,7 +243,7 @@
 
     // Function to generate the Fraction to Decimal quiz questions (All answers in decimal format)
     function generateFractionToDecimalQuiz() {
-        const fractionDecimalPairs = generateFractionDecimalTable(currentGridSize);
+        const fractionDecimalPairs = generateFractionDecimalTable(10); // Default 10x10 grid
 
         quizQuestions = fractionDecimalPairs.map(pair => ({
             type: 'fraction-to-decimal',
@@ -259,8 +258,8 @@
     // Function to generate the Multiplication quiz questions
     function generateMultiplicationQuiz() {
         quizQuestions = [];
-        for (let i = 1; i <= currentGridSize; i++) {
-            for (let j = 1; j <= currentGridSize; j++) {
+        for (let i = 1; i <= 10; i++) {
+            for (let j = 1; j <= 10; j++) {
                 const correctAnswer = i * j;
                 quizQuestions.push({
                     type: 'multiplication',
@@ -377,25 +376,22 @@
     }
 
     // Load the selected quiz type
-    function loadDecimalToFractionQuiz(gridSize) {
+    function loadDecimalToFractionQuiz() {
         currentQuizType = 'decimal-to-fraction';
-        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateDecimalToFractionQuiz();
     }
 
-    function loadFractionToDecimalQuiz(gridSize) {
+    function loadFractionToDecimalQuiz() {
         currentQuizType = 'fraction-to-decimal';
-        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateFractionToDecimalQuiz();
     }
 
-    function loadMultiplicationQuiz(gridSize) {
+    function loadMultiplicationQuiz() {
         currentQuizType = 'multiplication';
-        currentGridSize = gridSize;
         score = 0;
         currentQuestionIndex = 0;
         generateMultiplicationQuiz();
