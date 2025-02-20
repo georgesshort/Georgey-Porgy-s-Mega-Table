@@ -190,6 +190,73 @@
 
         window.onload = generateTable;
     </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Section</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .quiz-container {
+            font-family: 'Arial', sans-serif;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .quiz-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .quiz-options button {
+            display: block;
+            width: 90%;
+            margin: 10px auto;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+
+        .quiz-options button:hover {
+            background-color: #444;
+            transform: scale(1.05);
+        }
+
+        .quiz-options button.correct {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .quiz-options button.wrong {
+            background-color: #f44336; /* Red */
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
 <div class="quiz-container">
     <h2>Quiz Section</h2>
     <label for="quiz-type">Choose a quiz type:</label>
@@ -207,7 +274,7 @@
 </div>
 <script>
 function generateQuestion() {
-    const range = document.getElementById('range').value;
+    const range = document.getElementById('range').value || 10; // Default range to 10 if none specified
     const quizType = document.getElementById('quiz-type').value;
     const quizBox = document.getElementById('quiz-box');
     const questionEl = quizBox.querySelector('.quiz-question');
@@ -251,7 +318,7 @@ function generateQuestion() {
         const button = document.createElement('button');
         button.textContent = answer;
         button.onclick = function() {
-            evaluateAnswer(answer, correctAnswer, resultEl, button);
+            evaluateAnswer(answer, correctAnswer, resultEl, this);
         };
         optionsEl.appendChild(button);
     });
@@ -270,15 +337,4 @@ function generateWrongAnswer(type, range) {
     }
 }
 
-function evaluateAnswer(givenAnswer, correctAnswer, resultElement, button) {
-    let allButtons = button.parentNode.querySelectorAll('button');
-    allButtons.forEach(b => b.disabled = true);
-    if (givenAnswer === correctAnswer) {
-        button.classList.add('correct');
-        resultElement.innerHTML = "<span style='color:green; font-weight:bold;'>✅ Correct!</span>";
-    } else {
-        button.classList.add('wrong');
-        resultElement.innerHTML = `<span style='color:red; font-weight:bold;'>❌ Incorrect! The correct answer is <span style='color:green;'>${correctAnswer}</span></span>`;
-    }
-}
-</script>
+function evaluateAnswer(given
