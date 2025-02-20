@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
             margin: 0;
             padding: 20px;
         }
@@ -19,28 +18,28 @@
         .controls {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .controls label,
         .controls input,
         .controls button {
-            margin-right: 5px;
-            font-size: 10px;
+            margin-right: 10px;
+            font-size: 16px;
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         th, td {
             border: 1px solid #ddd;
             text-align: center;
-            padding: 4px 6px;
+            padding: 8px 25px;
             position: relative;
-            font-size: 10px;
+            font-size: 14px;
             white-space: nowrap;
         }
 
@@ -71,12 +70,13 @@
             background-color: #ffd700;
         }
 
+        /* Highlight square root boxes with the desired color */
         td.highlight-square-root {
-            background-color: rgb(255, 249, 207);
+            background-color: rgb(255, 249, 207); /* Soft yellow for square roots */
         }
 
         .controls input[type="number"] {
-            width: 50px;
+            width: 80px;
         }
     </style>
 </head>
@@ -84,7 +84,7 @@
     <h1>Georgey Porgy’s Mega Table</h1>
     <div class="controls">
         <div>
-            <label for="range">Table Range:</label>
+            <label for="range">Table Range (type 10 for 10x10, 100 for 50x50 etc):</label>
             <input type="number" id="range" min="1" value="15">
             <button onclick="generateTable()">Generate Table</button>
         </div>
@@ -97,6 +97,7 @@
     <div id="table-container"></div>
 
     <script>
+        // Function to calculate GCD
         function gcd(a, b) {
             while (b !== 0) {
                 [a, b] = [b, a % b];
@@ -104,27 +105,30 @@
             return a;
         }
 
+        // Function to generate the table
         function generateTable() {
             const range = document.getElementById('range').value;
             const container = document.getElementById('table-container');
-            container.innerHTML = '';
+            container.innerHTML = ''; // Clear any existing table
 
             const table = document.createElement('table');
             const headerRow = document.createElement('tr');
 
+            // Create table headers
             const emptyCell = document.createElement('th');
             headerRow.appendChild(emptyCell);
             for (let i = 1; i <= range; i++) {
                 const th = document.createElement('th');
-                th.textContent = i;
+                th.textContent = i; // Header for numbers
                 headerRow.appendChild(th);
             }
             table.appendChild(headerRow);
 
+            // Create table rows
             for (let i = 1; i <= range; i++) {
                 const row = document.createElement('tr');
                 const headerCell = document.createElement('th');
-                headerCell.textContent = i;
+                headerCell.textContent = i; // Header for numbers
                 row.appendChild(headerCell);
 
                 for (let j = 1; j <= range; j++) {
@@ -141,6 +145,7 @@
                         <div>${decimal}</div>
                     `;
 
+                    // Check for square roots (i == j) and apply style
                     if (i === j) {
                         cell.classList.add('highlight-square-root');
                     }
@@ -153,9 +158,10 @@
                 table.appendChild(row);
             }
 
-            container.appendChild(table);
+            container.appendChild(table); // Add table to the container
         }
 
+        // Function to highlight rows, columns, and cell
         function highlight(cell, row, col, range) {
             clearHighlight();
             const table = document.querySelector('table');
@@ -166,12 +172,14 @@
             cell.classList.add('highlight-cell');
         }
 
+        // Function to clear highlight
         function clearHighlight() {
             document.querySelectorAll('.highlight, .highlight-cell').forEach(cell => {
                 cell.classList.remove('highlight', 'highlight-cell');
             });
         }
 
+        // Function to search for a value
         function searchTable() {
             const value = document.getElementById('search').value.trim();
             if (!value) return;
@@ -188,276 +196,8 @@
             });
         }
 
+        // Generate the default table
         window.onload = generateTable;
     </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Georgey Porgy’s Mega Table</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .controls label,
-        .controls input,
-        .controls button {
-            margin-right: 5px;
-            font-size: 10px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            text-align: center;
-            padding: 4px 6px;
-            position: relative;
-            font-size: 10px;
-            white-space: nowrap;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-        }
-
-        th:first-child,
-        td:first-child {
-            position: sticky;
-            left: 0;
-            background-color: #f2f2f2;
-            z-index: 1;
-        }
-
-        tr:hover {
-            background-color: #ffffcc;
-        }
-
-        td.highlight {
-            background-color: #ffffcc;
-        }
-
-        td.highlight-cell {
-            background-color: #ffd700;
-        }
-
-        td.highlight-square-root {
-            background-color: rgb(173, 216, 230, 0.4);
-        }
-
-        .controls input[type="number"] {
-            width: 50px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Georgey Porgy’s Mega Table</h1>
-    <div class="controls">
-        <div>
-            <label for="range">Table Range:</label>
-            <input type="number" id="range" min="1" value="15">
-            <button onclick="generateTable()">Generate Table</button>
-        </div>
-        <div>
-            <label for="search">Search Value:</label>
-            <input type="text" id="search" placeholder="Enter a value">
-            <button onclick="searchTable()">Search</button>
-        </div>
-    </div>
-    <div id="table-container"></div>
-
-    <script>
-        function gcd(a, b) {
-            while (b !== 0) {
-                [a, b] = [b, a % b];
-            }
-            return a;
-        }
-
-        function generateTable() {
-            const range = document.getElementById('range').value;
-            const container = document.getElementById('table-container');
-            container.innerHTML = '';
-
-            const table = document.createElement('table');
-            const headerRow = document.createElement('tr');
-
-            const emptyCell = document.createElement('th');
-            headerRow.appendChild(emptyCell);
-            for (let i = 1; i <= range; i++) {
-                const th = document.createElement('th');
-                th.textContent = i;
-                headerRow.appendChild(th);
-            }
-            table.appendChild(headerRow);
-
-            for (let i = 1; i <= range; i++) {
-                const row = document.createElement('tr');
-                const headerCell = document.createElement('th');
-                headerCell.textContent = i;
-                row.appendChild(headerCell);
-
-                for (let j = 1; j <= range; j++) {
-                    const cell = document.createElement('td');
-                    const fraction = `${i}/${j}`;
-                    const divisor = gcd(i, j);
-                    const simplifiedFraction = divisor > 1 ? `(${i / divisor}/${j / divisor})` : '';
-                    const decimal = (i / j).toFixed(2);
-
-                    const product = i * j;
-                    cell.innerHTML = `
-                        <div>${product}</div>
-                        <div>${fraction} ${simplifiedFraction}</div>
-                        <div>${decimal}</div>
-                    `;
-
-                    if (i === j) {
-                        cell.classList.add('highlight-square-root');
-                    }
-
-                    cell.addEventListener('mouseover', () => highlight(cell, i, j, range));
-                    cell.addEventListener('mouseout', clearHighlight);
-
-                    row.appendChild(cell);
-                }
-                table.appendChild(row);
-            }
-
-            container.appendChild(table);
-        }
-
-        function highlight(cell, row, col, range) {
-            clearHighlight();
-            const table = document.querySelector('table');
-            for (let i = 1; i <= range; i++) {
-                table.rows[row].cells[i].classList.add('highlight');
-                table.rows[i].cells[col].classList.add('highlight');
-            }
-            cell.classList.add('highlight-cell');
-        }
-
-        function clearHighlight() {
-            document.querySelectorAll('.highlight, .highlight-cell').forEach(cell => {
-                cell.classList.remove('highlight', 'highlight-cell');
-            });
-        }
-
-        function searchTable() {
-            const value = document.getElementById('search').value.trim();
-            if (!value) return;
-
-            const table = document.querySelector('table');
-            if (!table) return;
-
-            table.querySelectorAll('td').forEach(cell => {
-                if (cell.textContent.includes(value)) {
-                    cell.classList.add('highlight-cell');
-                } else {
-                    cell.classList.remove('highlight-cell');
-                }
-            });
-        }
-
-        window.onload = generateTable;
-    </script>
-</body>
-</html>
-<div class="quiz-container">
-    <h2>Quiz Section</h2>
-    <label for="quiz-type">Choose a quiz type:</label>
-    <select id="quiz-type">
-        <option value="multiplication">Multiplication</option>
-        <option value="fraction-to-decimal">Fraction to Decimal</option>
-        <option value="decimal-to-fraction">Decimal to Fraction</option>
-    </select>
-    <button onclick="generateQuestion()">Start Quiz</button>
-
-    <div id="quiz-box">
-        <div class="quiz-question"></div>
-        <div class="quiz-options"></div>
-        <div class="quiz-result"></div>
-    </div>
-</div>
-
-<script>
-    function generateQuestion() {
-        const range = document.getElementById('range').value;
-        const quizType = document.getElementById('quiz-type').value;
-        const quizBox = document.getElementById('quiz-box');
-        const questionEl = quizBox.querySelector('.quiz-question');
-        const optionsEl = quizBox.querySelector('.quiz-options');
-        const resultEl = quizBox.querySelector('.quiz-result');
-
-        const num1 = Math.floor(Math.random() * range) + 1;
-        const num2 = Math.floor(Math.random() * range) + 1;
-        let correctAnswer;
-        let questionText;
-
-        if (quizType === "multiplication") {
-            correctAnswer = num1 * num2;
-            questionText = `${num1} × ${num2} = ?`;
-        } else if (quizType === "fraction-to-decimal") {
-            correctAnswer = (num1 / num2).toFixed(2);
-            questionText = `Convert ${num1}/${num2} to decimal:`;
-        } else {
-            correctAnswer = `${num1}/${num2}`;
-            questionText = `Convert ${parseFloat((num1 / num2).toFixed(2))} to fraction:`;
-        }
-
-        questionEl.textContent = questionText;
-        optionsEl.innerHTML = '';
-        resultEl.innerHTML = '';
-
-        let answers = [correctAnswer];
-        while (answers.length < 4) {
-            let randomWrong;
-            if (quizType === "multiplication") {
-                randomWrong = Math.floor(Math.random() * (range * range)) + 1;
-            } else if (quizType === "fraction-to-decimal") {
-                randomWrong = (Math.random() * 10).toFixed(2);
-            } else {
-                let wrongNum1 = Math.floor(Math.random() * range) + 1;
-                let wrongNum2 = Math.floor(Math.random() * range) + 1;
-                randomWrong = `${wrongNum1}/${wrongNum2}`;
-            }
-
-            if (!answers.includes(randomWrong)) answers.push(randomWrong);
-        }
-        answers.sort(() => Math.random() - 0.5);
-
-        answers.forEach(answer => {
-            const button = document.createElement('button');
-            button.textContent = answer;
-            button.onclick = () => {
-                resultEl.innerHTML = answer == correctAnswer 
-                    ? `<span style="color:green; font-weight:bold;">✅ Correct!</span>` 
-                    : `<span style="color:red; font-weight:bold;">❌ Incorrect! The correct answer is <span style="color:green;">${correctAnswer}</span></span>`;
-            };
-            optionsEl.appendChild(button);
-        });
-    }
-</script>
