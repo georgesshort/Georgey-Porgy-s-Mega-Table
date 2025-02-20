@@ -60,19 +60,19 @@
         }
 
         tr:hover {
-            background-color: #ffffcc;
+            background-color: rgba(21, 163, 253,0.3);
         }
 
         td.highlight {
-            background-color: #ffffcc;
+            background-color: rgba(21, 163, 253,0.2);
         }
 
         td.highlight-cell {
-            background-color: #ffd700;
+            background-color: rgba(21, 163, 253,0.2);
         }
 
         td.highlight-square-root {
-            background-color: rgba(21, 163, 253,0.1)
+            background-color: rgba(21, 163, 253,0.1);
         }
 
         .controls input[type="number"] {
@@ -190,3 +190,95 @@
 
         window.onload = generateTable;
     </script>
+<div class="quiz-container">
+    <h2>Quiz Section</h2>
+    <label for="quiz-type">Choose a quiz type:</label>
+    <select id="quiz-type">
+        <option value="multiplication">Multiplication</option>
+        <option value="fraction-to-decimal">Fraction to Decimal</option>
+        <option value="decimal-to-fraction">Decimal to Fraction</option>
+    </select>
+    <button onclick="generateQuestion()">Start Quiz</button>
+    <div id="quiz-box">
+        <div class="quiz-question"></div>
+        <div class="quiz-options"></div>
+        <div class="quiz-result"></div>
+    </div>
+</div>
+<script>
+function generateQuestion() {
+    const range = document.getElementById('range').value;
+    const quizType = document.getElementById('quiz-type').value;
+    const quizBox = document.getElementById('quiz-box');
+    const questionEl = quizBox.querySelector('.quiz-question');
+    const optionsEl = quizBox.querySelector('.quiz-options');
+    const resultEl = quizBox.querySelector('.quiz-result');
+
+    let num1 = Math.floor(Math.random() * range) + 1;
+    let num2 = Math.floor(Math.random() * range) + 1;
+    let correctAnswer;
+    let questionText;
+
+    switch (quizType) {
+        case "multiplication":
+            correctAnswer = num1 * num2;
+            questionText = `${num1} × ${num2} = ?`;
+            break;
+        case "fraction-to-decimal":
+            correctAnswer = (num1 / num2).toFixed(2);
+            questionText = `Convert ${num1}/${num2} to decimal:`;
+            break;
+        case "decimal-to-fraction":
+            correctAnswer = `${num1}/${num2}`;
+            questionText = `Convert ${parseFloat((num1 / num2).toFixed(2))} to fraction:`;
+            break;
+    }
+
+    questionEl.textContent = questionText;
+    optionsEl.innerHTML = '';
+
+    let answers = [correctAnswer];
+    while (answers.length < 4) {
+        let randomWrongAnswer = generateWrongAnswer(quizType, range);
+        if (!answers.includes(randomWrongAnswer)) {
+            answers.push(randomWrongAnswer);
+        }
+    }
+
+    answers.sort(() => 0.5 - Math.random());
+
+    answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.textContent = answer;
+        button.onclick = function() {
+            evaluateAnswer(answer, correctAnswer, resultEl, button);
+        };
+        optionsEl.appendChild(button);
+    });
+}
+
+function generateWrongAnswer(type, range) {
+    switch (type) {
+        case "multiplication":
+            return Math.floor(Math.random() * (range * range)) + 1;
+        case "fraction-to-decimal":
+            return (Math.random() * range).toFixed(2);
+        case "decimal-to-fraction":
+            let num1 = Math.floor(Math.random() * range) + 1;
+            let num2 = Math.floor(Math.random() * range) + 1;
+            return `${num1}/${num2}`;
+    }
+}
+
+function evaluateAnswer(givenAnswer, correctAnswer, resultElement, button) {
+    let allButtons = button.parentNode.querySelectorAll('button');
+    allButtons.forEach(b => b.disabled = true);
+    if (givenAnswer === correctAnswer) {
+        button.classList.add('correct');
+        resultElement.innerHTML = "<span style='color:green; font-weight:bold;'>✅ Correct!</span>";
+    } else {
+        button.classList.add('wrong');
+        resultElement.innerHTML = `<span style='color:red; font-weight:bold;'>❌ Incorrect! The correct answer is <span style='color:green;'>${correctAnswer}</span></span>`;
+    }
+}
+</script>
