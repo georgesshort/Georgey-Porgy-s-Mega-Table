@@ -5,31 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Georgey Porgy’s Mega Table</title>
     <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+
+    <!-- Google Analytics Tracking Code -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5363S3NVB1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5363S3NVB1'); // This is your actual Google Analytics Tracking ID
+    </script>
 </head>
 <body>
     <h1>Georgey Porgy’s Mega Table</h1>
 
-    <!-- Controls Section (Generate Table & Search Function) -->
-    <div class="controls">
-        <div class="left-controls">
-            <label for="range">Table Range: 25 for 25x25 etc</label>
-            <input type="number" id="range" min="1" value="12">
-            <button onclick="generateTable()">Generate Table</button>
-        </div>
-        <div class="right-controls">
-            <label for="search">Search Value:</label>
-            <input type="text" id="search" placeholder="Enter a value">
-            <button onclick="searchTable()">Search</button>
-        </div>
+   <!-- Controls Section (Generate Table & Search Function) -->
+<div class="controls">
+    <div class="left-controls">
+        <label for="range">Table Range: 25 for 25x25 etc</label>
+        <input type="number" id="range" min="1" value="12">
+        <button onclick="generateTable(); trackEvent('Generate Table');">Generate Table</button>
     </div>
+    <div class="right-controls">
+        <label for="search">Search Value:</label>
+        <input type="text" id="search" placeholder="Enter a value">
+        <button onclick="searchTable(); trackEvent('Search Table');">Search</button>
+    </div>
+</div>
 
-    <!-- Table Container -->
-    <div id="table-container"></div>
+<!-- Table Container -->
+<div id="table-container"></div>
 
-    <!-- Link to external JavaScript file -->
-    <script src="script.js"></script>
+<!-- Link to external JavaScript file -->
+<script src="script.js"></script>
 </body>
 </html>
+
 <!-- Quiz Section -->
 <div id="quiz-container">
     <h2>Quiz Section</h2>
@@ -40,7 +51,7 @@
         <option value="fraction-to-decimal">Fraction to Decimal</option>
         <option value="squares-cubes">Squares, Square Roots, Cubes, Cube Roots</option>
     </select>
-    <button onclick="generateQuestion()">Start Quiz</button>
+    <button onclick="generateQuestion(); trackEvent('Start Quiz');">Start Quiz</button>
     <div class="quiz-box">
         <div class="quiz-question"></div>
         <div class="quiz-options"></div>
