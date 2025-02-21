@@ -232,3 +232,14 @@ function simplifyFraction(numerator, denominator) {
     let divisor = gcd(numerator, denominator);
     return `${numerator / divisor}/${denominator / divisor}`;
 }
+// Function to track button clicks in Google Analytics
+function trackEvent(actionName) {
+    if (typeof gtag === "function") {
+        gtag('event', actionName, {
+            event_category: 'User Interaction',
+            event_label: actionName
+        });
+    } else {
+        console.log("Google Analytics not loaded");
+    }
+}
